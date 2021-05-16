@@ -1,0 +1,14 @@
+name: dartvolt
+description: Revolt Dart Wrapper
+homepage: https://revolt.chat
+# version: 1.0.0
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  http: ^0.13.3
+  web_socket_channel: ^2.1.0
+
+dev_dependencies:
+  pedantic: ^1.9.0
