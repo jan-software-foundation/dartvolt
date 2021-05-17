@@ -37,6 +37,19 @@ abstract class Channel {
         return jsonDecode(fetched.body);
     }
     
+    Future<void> send(message) async {
+        var res = await http.post(
+            Uri.parse(client.clientConfig.apiUrl + '/channels/$id/messages'),
+            headers: client._authHeaders,
+            body: jsonEncode({
+                'nonce': DateTime.now().millisecondsSinceEpoch.toString(),
+                'content': message
+            })
+        );
+        if (res.statusCode != 200) throw res.body;
+        return null;
+    }
+    
     Channel(this.client, { id, name }) {
         this.id = id;
         if (name != null) this.name = name;
