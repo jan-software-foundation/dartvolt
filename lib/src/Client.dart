@@ -12,6 +12,9 @@ class Client {
     var _authStarted = false;
     SessionInfo? sessionInfo;
     
+    late var users = UserManager(this);
+    late var channels = ChannelManager(this);
+    
     late final _logger = Logger(this);
     
     /// Surprise surprise, this emits events

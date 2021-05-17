@@ -18,6 +18,8 @@ part 'src/Client.dart';
 part 'src/structs/SessionInfo.dart';
 part 'src/structs/ClientConfig.dart';
 part 'src/structs/ServerConfig.dart';
+part 'src/structs/Channel.dart';
+part 'src/structs/User.dart';
 part 'src/structs/ChannelManager.dart';
 part 'src/structs/UserManager.dart';
 

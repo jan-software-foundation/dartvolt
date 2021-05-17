@@ -1,50 +1,73 @@
 part of dartvolt;
 
-class Channel {
+class ChannelManager {
     Client client;
-    late String _id;
-    late String name;
-    late Map<String, User>? members;
-    late ChannelType channelType;
-    bool partial = true;
+    var cache = <String, Channel>{};
     
-    User? owner;
-    
-    /// If partial, fetch the channel.
-    /// When [preferCached] is disabled,
-    /// this will ignore the cached version.
-    Future<Channel> fetch({ bool preferCached = true }) async {
-        if (preferCached && !partial) {
-            return this;
+    /// Fetch a channel. If [preferCache]
+    /// is false, any cached versions
+    /// will be ignored.
+    Future<Channel> fetch(String id, { preferCache = true }) async {
+        if (cache.containsKey(id)) {
+            var channel = cache[id] as Channel;
+            if (channel.partial) {
+                await channel.fetch(preferCached: preferCache);
+            }
+            return channel;
+        } else {
+            var channel = await _fetchChannel(id);
+            cache[id] = channel;
+            return channel;
         }
+    }
+    
+    Future<Channel> _fetchChannel(String id) async {
+        var channelType = await _fetchChannelType(id);
         
+        switch(channelType) {
+            case ChannelType.GroupChannel:
+                var channel = GroupChannel(client, id: id);
+                await channel.fetch(preferCached: false);
+                return channel;
+            case ChannelType.DMChannel:
+                var channel = DMChannel(client, id: id);
+                await channel.fetch(preferCached: false);
+                return channel;
+            case ChannelType.SavedMessagesChannel:
+                var channel = SavedMessagesChannel(client, id: id);
+                await channel.fetch(preferCached: false);
+                return channel;
+            default: throw 'Unknown channel type';
+        }
+    }
+    
+    Future<ChannelType> _fetchChannelType(String id) async {
         var res = await http.get(
-            Uri.parse(client.clientConfig.apiUrl + '/channels/$_id'),
+            Uri.parse(client.clientConfig.apiUrl + '/channels/$id'),
             headers: client._authHeaders
         );
-        var c = jsonDecode(res.body);
-        
-        print(c);
-        
-        channelType =
-            c['channel_type'] == 'Group' ? ChannelType.Group :
-            c['channel_type'] == 'DirectMessage' ? ChannelType.DirectMessage :
-            ChannelType.SavedMessages;
-        name = c['name'];
-        // owner = client.users.fetch(c['owner']);
-        
-        return this;
+        var channelType = jsonDecode(res.body)['channel_type'];
+        switch(channelType) {
+            case 'Group':
+                return ChannelType.GroupChannel;
+            break;
+            case 'DirectMessage':
+                return ChannelType.DMChannel;
+            break;
+            case 'SavedMessages':
+                return ChannelType.SavedMessagesChannel;
+            break;
+            default:
+                throw 'Received invalid channel type. Expected one of either '
+                'Group, DirectMessage, or SavedMessages; received $channelType';
+        }
     }
     
-    Channel(this.client, { id, name, channelType }) {
-        this._id = id;
-        this.name = name;
-        this.channelType = channelType;
-    }
+    ChannelManager(this.client);
 }
 
 enum ChannelType {
-    Group,
-    DirectMessage,
-    SavedMessages,
+    GroupChannel,
+    DMChannel,
+    SavedMessagesChannel,
 }
