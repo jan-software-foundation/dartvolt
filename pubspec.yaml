@@ -1,5 +1,5 @@
 name: dartvolt
-description: Wrapper for the revolt.chat API
+description: Experimental API Wrapper for the REVOLT.chat API including basic HTTP and Websocket functionality.
 homepage: https://github.com/janderedev/dartvolt
 version: 0.0.1
 

@@ -6,7 +6,7 @@ class Logger {
     
     Logger(this.client);
     
-    debug(dynamic message) {
+    void debug(dynamic message) {
         if (client.clientConfig.debug) {
             // ansi
             print('\u001b[0m\u001b[2m[Debug] \u001b[0m$message');

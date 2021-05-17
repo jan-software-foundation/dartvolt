@@ -68,6 +68,7 @@ class GroupChannel extends Channel {
     late User groupOwner;
     String? description;
     
+    @override
     Future<Channel> _fetchAssignProps(Map<String, dynamic> props) async {
         name = props['name'];
         id = props['_id'];
@@ -81,6 +82,7 @@ class GroupChannel extends Channel {
 }
 
 class DMChannel extends Channel {
+    @override
     Future<Channel> _fetchAssignProps(Map<String, dynamic> props) async {
         name = props['name'];
         id = props['_id'];
@@ -93,6 +95,7 @@ class DMChannel extends Channel {
 }
 
 class SavedMessagesChannel extends Channel {
+    @override
     Future<Channel> _fetchAssignProps(Map<String, dynamic> props) async {
         name = props['name'];
         id = props['_id'];

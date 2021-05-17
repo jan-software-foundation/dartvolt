@@ -2,7 +2,7 @@ part of dartvolt;
 
 class Client {
     Client(ClientConfig config) {
-        this.clientConfig = config;
+        clientConfig = config;
     }
     
     ClientConfig clientConfig = ClientConfig();

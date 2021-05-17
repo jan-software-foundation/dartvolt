@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/status.dart' as WSStatus;
 import 'package:eventify/eventify.dart';
 
 part 'src/misc/EventHandler.dart';

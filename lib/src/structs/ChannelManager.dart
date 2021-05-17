@@ -50,13 +50,10 @@ class ChannelManager {
         switch(channelType) {
             case 'Group':
                 return ChannelType.GroupChannel;
-            break;
             case 'DirectMessage':
                 return ChannelType.DMChannel;
-            break;
             case 'SavedMessages':
                 return ChannelType.SavedMessagesChannel;
-            break;
             default:
                 throw 'Received invalid channel type. Expected one of either '
                 'Group, DirectMessage, or SavedMessages; received $channelType';
