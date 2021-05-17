@@ -1,9 +1,13 @@
 part of dartvolt;
 
 class ClientConfig {
-    String API_URL;
+    String apiUrl;
+    bool debug;
+    String user_agent;
     
     ClientConfig({
-        this.API_URL = 'https://api.revolt.chat'
+        this.apiUrl = 'https://api.revolt.chat',
+        this.debug = false,
+        this.user_agent = 'dartvolt/1.0 (+https://github.com/janderedev/dartvolt)'
     });
 }

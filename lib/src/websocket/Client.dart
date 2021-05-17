@@ -5,6 +5,7 @@ class WSClient {
     int heartbeat;
     bool connected = false;
     bool ready = false;
+    late _RevoltEventHandler evtHandler = _RevoltEventHandler(revoltClient);
     
     late WebSocketChannel _wsClient;
     
@@ -24,7 +25,8 @@ class WSClient {
         );
         
         _wsClient.stream.listen((message) {
-            print('[WS] [IN]  $message');
+            revoltClient._logger.debug('[WS] [IN]  $message');
+            evtHandler._handleWSEvent(jsonDecode(message));
         });
         
         // Authentication
@@ -59,7 +61,7 @@ class WSClient {
             );
         }
         
-        print('[WS] [OUT] $loggedPayload');
+        revoltClient._logger.debug('[WS] [OUT] $loggedPayload');
         _wsClient.sink.add(jsonEncode(payload));
     }
 }

@@ -12,6 +12,11 @@ class Client {
     var _authStarted = false;
     SessionInfo? sessionInfo;
     
+    late final _logger = Logger(this);
+    
+    /// Surprise surprise, this emits events
+    EventEmitter events = EventEmitter();
+    
     /// Use an existing session
     useExistingSession(SessionInfo session) async {
         if (_authStarted) throw 'Cannot authenticate again';
@@ -19,7 +24,8 @@ class Client {
         sessionInfo = session;
         _authHeaders = {
             'x-user-id': session.clientId,
-            'x-session-token': session.sessionToken
+            'x-session-token': session.sessionToken,
+            'User-Agent': clientConfig.user_agent,
         };
         
         serverConfig = await _fetchServerConfig();
@@ -34,7 +40,7 @@ class Client {
     
     Future<bool> _validateSession(SessionInfo session, ClientConfig clientConfig) async {
         var res = await http.get(
-            Uri.parse(clientConfig.API_URL + '/auth/check'),
+            Uri.parse(clientConfig.apiUrl + '/auth/check'),
             headers: _authHeaders
         );
         
@@ -42,7 +48,7 @@ class Client {
     }
     
     Future<ServerConfig> _fetchServerConfig() async {
-        var res = await http.get(Uri.parse(clientConfig.API_URL));
+        var res = await http.get(Uri.parse(clientConfig.apiUrl));
         Map<String, dynamic> config = jsonDecode(res.body);
         Map<String, dynamic> features = config['features'];
         return ServerConfig(
