@@ -20,8 +20,37 @@ class Client {
     /// Surprise surprise, this emits events
     EventEmitter events = EventEmitter();
     
+    /// Generate a new session using username/password
+    Future<void> login(AuthInfo authInfo) async {
+        serverConfig = await _fetchServerConfig();
+        //if (serverConfig.captcha != null && authInfo.captcha == null) {
+        //    throw 'Server requires captcha, but none was provided';
+        //}
+        
+        var authBody = {
+            'email': authInfo.email,
+            'password': authInfo.password,
+        };
+        
+        if (authInfo.device_name != null) {
+            authBody['device_name'] = authInfo.device_name as String;
+        }
+        if (authInfo.captcha != null) {
+            authBody['captcha'] = authInfo.captcha as String;
+        }
+        
+        var res = await http.post(
+            Uri.parse(clientConfig.apiUrl + '/auth/login'),
+            body: jsonEncode(authBody),
+            headers: { 'User-Agent': clientConfig.user_agent }
+        );
+        
+        print(res.body);
+        if (res.statusCode != 200) throw res.body;
+    }
+    
     /// Use an existing session
-    useExistingSession(SessionInfo session) async {
+    Future<void> useExistingSession(SessionInfo session) async {
         if (_authStarted) throw 'Cannot authenticate again';
         _authStarted = true;
         sessionInfo = session;

@@ -15,7 +15,7 @@ part 'src/misc/logger.dart';
 
 part 'src/Client.dart';
 
-part 'src/structs/SessionInfo.dart';
+part 'src/structs/AuthData.dart';
 part 'src/structs/ClientConfig.dart';
 part 'src/structs/ServerConfig.dart';
 part 'src/structs/Channel.dart';
