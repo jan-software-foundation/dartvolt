@@ -76,6 +76,10 @@ class Client {
             headers: _authHeaders
         );
         
+        if (res.statusCode != 200) {
+            _logger.debug('${res.statusCode} : ${res.body}');
+        }
+        
         return res.statusCode == 200;
     }
     
