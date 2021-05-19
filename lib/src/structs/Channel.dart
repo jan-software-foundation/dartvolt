@@ -50,9 +50,7 @@ abstract class Channel {
         return null;
     }
     
-    Channel(this.client, { id, name }) {
-        this.id = id;
-        if (name != null) this.name = name;
+    Channel(this.client, { required this.id }) {
         
         if (this is GroupChannel) {
             channel_type = 'Group';
@@ -78,7 +76,7 @@ class GroupChannel extends Channel {
         return this;
     }
     
-    GroupChannel(Client client, { id, name }) : super(client, id: id, name: name);
+    GroupChannel(Client client, { required id }) : super(client, id: id);
 }
 
 class DMChannel extends Channel {
@@ -91,7 +89,7 @@ class DMChannel extends Channel {
         return this;
     }
     
-    DMChannel(Client client, { id, name }) : super(client, id: id, name: name);
+    DMChannel(Client client, { required id }) : super(client, id: id);
 }
 
 class SavedMessagesChannel extends Channel {
@@ -104,5 +102,5 @@ class SavedMessagesChannel extends Channel {
         return this;
     }
     
-    SavedMessagesChannel(Client client, { id, name }) : super(client, id: id, name: name);
+    SavedMessagesChannel(Client client, { required id }) : super(client, id: id);
 }

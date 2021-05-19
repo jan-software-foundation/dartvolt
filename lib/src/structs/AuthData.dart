@@ -20,17 +20,15 @@ class SessionInfo {
 /// Authentication info for creating a new
 /// session.
 class AuthInfo {
-    late String email;
-    late String password;
+    String email;
+    String password;
     String? device_name;
     String? captcha;
     
-    AuthInfo(
-        String email, String password, { String? device_name, String? captcha }
-    ) {
-        this.email = email;
-        this.password = password;
-        this.device_name = device_name;
-        this.captcha = captcha;
-    }
+    AuthInfo({
+        required this.email,
+        required this.password,
+        this.device_name,
+        this.captcha
+    });
 }

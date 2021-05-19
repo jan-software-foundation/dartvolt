@@ -10,14 +10,9 @@ class WSClient {
     late WebSocketChannel _wsClient;
     
     WSClient({
-        revoltClient,
+        required this.revoltClient,
         this.heartbeat = 10
-    }) {
-        if (revoltClient == null) {
-            throw 'No Revolt Client passed';
-        }
-        this.revoltClient = revoltClient;
-    }
+    });
     
     Future connect() async {
         _wsClient = WebSocketChannel.connect(

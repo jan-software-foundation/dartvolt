@@ -26,8 +26,5 @@ class User {
         return this;
     }
     
-    User(this.client, { id, name }) {
-        this.id = id;
-        if (name != null) this.name = name;
-    }
+    User(this.client, { required this.id });
 }
