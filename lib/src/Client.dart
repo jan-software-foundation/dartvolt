@@ -20,7 +20,18 @@ class Client {
     
     late final _logger = Logger(this);
     
-    /// Surprise surprise, this emits events
+    /// Eventify event emitter.
+    /// Emits the following events:
+    /// 
+    /// `ready` -> [Client] \
+    /// `message/create` -> [Message] \
+    /// ~~`message/update` -> [MessageEdit]~~
+    /// 
+    /// Example: \
+    /// `client.events.on('ready', null, (ev, ctx) { /* do something */ })`
+    /// 
+    /// You can also prefix `APIEvent/` to listen for WS events directly. \
+    /// `client.events.on('APIEvent/Ready', null, (ev, ctx) { /* do something */ })`
     EventEmitter events = EventEmitter();
     
     /// Generate a new session using username/password

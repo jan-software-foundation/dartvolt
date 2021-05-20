@@ -96,7 +96,8 @@ class ChannelManager {
                 return ChannelType.SavedMessagesChannel;
             default:
                 throw 'Received invalid channel type. Expected one of either '
-                'Group, DirectMessage, or SavedMessages; received $channelType';
+                'Group, DirectMessage, or SavedMessages; received $channelType'
+                '\nChannel object: ${jsonDecode(res.body)}';
         }
     }
     
