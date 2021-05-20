@@ -1,3 +1,7 @@
+# 0.0.3
+- Added (incomplete) User/Channel caching
+- Improved documentation
+
 # 0.0.2
 Fixed some of the issues pub.dev found
 - Added example

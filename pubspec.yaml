@@ -1,7 +1,7 @@
 name: dartvolt
 description: Experimental API Wrapper for the REVOLT.chat API including basic HTTP and Websocket functionality.
 homepage: https://github.com/janderedev/dartvolt
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
