@@ -27,9 +27,9 @@ class WSClient {
         // Authentication
         var authPayload = {
             'type': 'Authenticate',
-            'id': revoltClient.sessionInfo?.sessionId ?? '',
-            'user_id': revoltClient.sessionInfo?.clientId ?? '',
-            'session_token': revoltClient.sessionInfo?.sessionToken ?? ''
+            'id': revoltClient.sessionInfo.sessionId,
+            'user_id': revoltClient.sessionInfo.clientId,
+            'session_token': revoltClient.sessionInfo.sessionToken
         };
         send(authPayload);
         
@@ -49,12 +49,11 @@ class WSClient {
         // Redact session token from payload
         var loggedPayload = payload
             .toString();
-        if (revoltClient.sessionInfo?.sessionToken != null) {
-            loggedPayload = loggedPayload.replaceAll(
-                revoltClient.sessionInfo?.sessionToken ?? '', // null safety aaa
-                '[Session Token]'
-            );
-        }
+        
+        loggedPayload = loggedPayload.replaceAll(
+            revoltClient.sessionInfo.sessionToken,
+            '[Session Token]'
+        );
         
         revoltClient._logger.debug('[WS] [OUT] $loggedPayload');
         _wsClient.sink.add(jsonEncode(payload));

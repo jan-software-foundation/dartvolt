@@ -1,11 +1,28 @@
 part of dartvolt;
 
 abstract class Channel {
+    
+    /// The Client that created this channel.
     Client client;
-    late String id;
-    late String name;
-    late Map<String, User>? members;
+    
+    /// The channel's ID.
+    String id;
+    
+    /// The display name of the channel.
+    String? name;
+    
+    /// I have no idea what this is used for.
+    String? nonce;
+    
+    /// All participants in this channel.
+    Map<String, User>? members;
+    
+    /// The type of channel.
+    /// Either `Group`, `DirectMessage` or `SavedMessages`.
     late String channel_type;
+    
+    /// Whether the channel is fully fetched.
+    /// If false, only [id] is quaranteed to be present.
     bool partial = true;
     
     /// Takes the values fetched by [_fetchSelf()]
@@ -63,7 +80,13 @@ abstract class Channel {
 }
 
 class GroupChannel extends Channel {
-    late User groupOwner;
+    /// The ID of the channel's owner.
+    String? ownerId;
+    
+    /// The owner of this channel.
+    User? owner;
+    
+    // The channel's description.
     String? description;
     
     @override

@@ -21,5 +21,6 @@ part 'src/structs/Channel.dart';
 part 'src/structs/User.dart';
 part 'src/structs/ChannelManager.dart';
 part 'src/structs/UserManager.dart';
+part 'src/structs/File.dart';
 
 part 'src/websocket/Client.dart';

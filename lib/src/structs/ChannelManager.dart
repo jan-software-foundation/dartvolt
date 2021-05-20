@@ -4,6 +4,46 @@ class ChannelManager {
     Client client;
     var cache = <String, Channel>{};
     
+    void _storeAPIChannel(Map<String, dynamic> apiChannel) {
+        Channel channel;
+        
+        switch(apiChannel['channel_type']) {
+            case 'Group':
+                channel = GroupChannel(client, id: apiChannel['_id']);
+            break;
+            case 'DirectMessage':
+                channel = DMChannel(client, id: apiChannel['_id']);
+            break;
+            case 'SavedMessages':
+                channel = SavedMessagesChannel(client, id: apiChannel['_id']);
+            break;
+            default: throw 'Invalid channel';
+        }
+        
+        channel.name = apiChannel['name'];
+        if (channel is GroupChannel) {
+            channel.owner = client.users.cache[apiChannel['owner']]
+                ?? User(client, id: apiChannel['owner']);
+            
+            channel.description = apiChannel['description'];
+        }
+        
+        channel.nonce = apiChannel['nonce'];
+        
+        channel.members ??= <String, User>{};
+        
+        (apiChannel['recipients'] as List<dynamic>).forEach((uid) {
+            if (uid != null) {
+                (channel.members as Map<String, User>)[uid] =
+                    client.users.cache[uid] ?? User(client, id: uid);
+            }
+        });
+        
+        // TODO add last_message
+        
+        client.channels.cache[channel.id] = channel;
+    }
+    
     /// Fetch a channel. If [preferCache]
     /// is false, any cached versions
     /// will be ignored.

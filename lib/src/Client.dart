@@ -10,10 +10,13 @@ class Client {
     late WSClient wsClient;
     Map<String, String> _authHeaders = {};
     var _authStarted = false;
-    SessionInfo? sessionInfo;
+    late SessionInfo sessionInfo;
     
     late var users = UserManager(this);
     late var channels = ChannelManager(this);
+    
+    /// The user the client logged in as.
+    late User user;
     
     late final _logger = Logger(this);
     
