@@ -30,7 +30,20 @@ class Message {
         required this.nonce,
         this.content,
         this.attachment,
-    });
+    }) {
+        client.messages.msgChannelCache[id] = channel;
+    }
+    
+    /// Utility function to duplicate the message object
+    Message.clone(Message message) : this(
+        message.client,
+        id: message.id,
+        author: message.author,
+        channel: message.channel,
+        nonce: message.nonce,
+        content: message.content,
+        attachment: message.attachment
+    );
 }
 
 /// Describes a message edit

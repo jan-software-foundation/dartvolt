@@ -23,5 +23,6 @@ part 'src/structs/ChannelManager.dart';
 part 'src/structs/UserManager.dart';
 part 'src/structs/File.dart';
 part 'src/structs/Message.dart';
+part 'src/structs/MessageManager.dart';
 
 part 'src/websocket/Client.dart';

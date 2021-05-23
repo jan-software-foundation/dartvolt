@@ -4,8 +4,8 @@ class File {
     String id;
     String tag;
     String filename;
-    String type;
     String content_type;
+    String? type;
     int filesize;
     
     /// If the file is an image
@@ -16,9 +16,9 @@ class File {
         required this.id,
         required this.tag,
         required this.filename,
-        required this.type,
         required this.content_type,
         required this.filesize,
+        this.type,
         this.width,
         this.height,
     });
