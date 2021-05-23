@@ -14,6 +14,7 @@ class Client {
     
     late var users = UserManager(this);
     late var channels = ChannelManager(this);
+    late var messages = ClientMessageManager(this);
     
     /// The user the client logged in as.
     late User user;
@@ -25,7 +26,7 @@ class Client {
     /// 
     /// `ready` -> [Client] \
     /// `message/create` -> [Message] \
-    /// ~~`message/update` -> [MessageEdit]~~
+    /// `message/update` -> [MessageEdit]
     /// 
     /// Example: \
     /// `client.events.on('ready', null, (ev, ctx) { /* do something */ })`

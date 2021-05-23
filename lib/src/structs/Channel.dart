@@ -17,6 +17,9 @@ abstract class Channel {
     /// All participants in this channel.
     Map<String, User>? members;
     
+    /// The messages sent in this channel.
+    late var messages = MessageManager(client: client, channel: this);
+    
     /// The type of channel.
     /// Either `Group`, `DirectMessage` or `SavedMessages`.
     late String channel_type;

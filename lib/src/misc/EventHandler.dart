@@ -64,9 +64,31 @@ class _RevoltEventHandler {
             break;
             
             case 'MessageUpdate':
-                // TODO add message/update event
-                // need a message cache for this
-                // {"type":"MessageUpdate","id":"ASDDUGTDKKJ","data":{"content":"UKZGDZH","edited":{"$date":"2021-05-20T14:59:38.852Z"}}}
+                // TODO fix this clusterfuck when https://gitlab.insrt.uk/revolt/delta/-/issues/6 is fixed
+                var channel = revoltClient.messages.msgChannelCache[event['id']];
+                
+                if (channel != null) {
+                    var oldMsg = channel.messages.cache[event['id']];
+                    Message newMsg;
+                    if (oldMsg == null) {
+                        newMsg = await channel.messages.fetch(event['id']);
+                    } else {
+                        newMsg = Message.clone(oldMsg);
+                        newMsg.content = event['data']['content'];
+                    }
+                    
+                    revoltClient.events.emit(
+                        'message/update',
+                        null,
+                        MessageEdit(
+                            oldMessage: oldMsg,
+                            newMessage: newMsg
+                        )
+                    );
+                    
+                    // Update cached message object
+                    channel.messages.cache[event['id']] = newMsg;
+                }
             break;
         }
         
