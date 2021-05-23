@@ -17,6 +17,9 @@ class Message {
     /// The message's ID
     String id;
     
+    /// Whether the message has been deleted
+    bool deleted = false;
+    
     /// The content of this message
     String? content;
     

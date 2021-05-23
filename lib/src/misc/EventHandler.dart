@@ -39,12 +39,13 @@ class _RevoltEventHandler {
             break;
             
             case 'Message':
+                var channel = await revoltClient.channels.fetch(event['channel']);
                 var attachment = event['attachment'];
                 var message = Message(
                     revoltClient,
                     id: event['_id'],
                     author: revoltClient.users._getOrCreateUser(event['_id']),
-                    channel: await revoltClient.channels.fetch(event['channel']),
+                    channel: channel,
                     nonce: event['nonce'],
                     content: event['content'],
                     attachment: attachment != null ?
@@ -59,6 +60,8 @@ class _RevoltEventHandler {
                             width: attachment['metatata']?['width'],
                         ) : null,
                 );
+                
+                channel.messages.cache[message.id] = message;
                 
                 revoltClient.events.emit('message/create', null, message);
             break;
@@ -88,6 +91,20 @@ class _RevoltEventHandler {
                     
                     // Update cached message object
                     channel.messages.cache[event['id']] = newMsg;
+                }
+            break;
+            case 'MessageDelete':
+                var channel = revoltClient.messages.msgChannelCache[event['id']];
+                if (channel != null) {
+                    var msg = channel.messages.cache[event['id']];
+                    if (msg != null) {
+                        msg.deleted = true;
+                        revoltClient.events.emit(
+                            'message/delete',
+                            null,
+                            msg
+                        );
+                    }
                 }
             break;
         }

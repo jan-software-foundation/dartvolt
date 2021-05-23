@@ -26,7 +26,8 @@ class Client {
     /// 
     /// `ready` -> [Client] \
     /// `message/create` -> [Message] \
-    /// `message/update` -> [MessageEdit]
+    /// `message/update` -> [MessageEdit] \
+    /// `message/delete` -> [Message]
     /// 
     /// Example: \
     /// `client.events.on('ready', null, (ev, ctx) { /* do something */ })`
