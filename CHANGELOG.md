@@ -1,3 +1,7 @@
+# 0.0.4
+- Added a channel message manager
+- Added `message/update` and `message/delete` events
+
 # 0.0.3
 - Added (incomplete) User/Channel caching
 - Improved documentation
