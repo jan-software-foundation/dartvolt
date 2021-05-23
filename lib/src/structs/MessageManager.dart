@@ -48,10 +48,6 @@ class MessageManager {
         return msg;
     }
     
-    void _storeAPIMessage(Map<String, dynamic> message) {
-        
-    }
-    
     MessageManager({ required this.client, required this.channel });
 }
 

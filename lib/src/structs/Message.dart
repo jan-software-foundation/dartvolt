@@ -34,7 +34,7 @@ class Message {
         this.content,
         this.attachment,
     }) {
-        client.messages.msgChannelCache[id] = channel;
+        client.messages._pushMessage(this);
     }
     
     /// Utility function to duplicate the message object
