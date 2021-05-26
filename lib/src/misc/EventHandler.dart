@@ -46,7 +46,7 @@ class _RevoltEventHandler {
                     id: event['_id'],
                     author: revoltClient.users._getOrCreateUser(event['_id']),
                     channel: channel,
-                    nonce: event['nonce'],
+                    nonce: event['nonce'] ?? '',
                     content: event['content'],
                     attachment: attachment != null ?
                         File(
