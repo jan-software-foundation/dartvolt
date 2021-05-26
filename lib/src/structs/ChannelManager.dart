@@ -39,8 +39,6 @@ class ChannelManager {
             }
         });
         
-        // TODO add last_message
-        
         client.channels.cache[channel.id] = channel;
     }
     
