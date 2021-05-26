@@ -32,6 +32,8 @@ class ChannelManager {
         
         channel.members ??= <String, User>{};
         
+        channel.icon = apiChannel['icon'] == null ? null : File.fromJSON(apiChannel['icon']);
+        
         (apiChannel['recipients'] as List<dynamic>).forEach((uid) {
             if (uid != null) {
                 (channel.members as Map<String, User>)[uid] =
