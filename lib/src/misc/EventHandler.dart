@@ -39,6 +39,12 @@ class _RevoltEventHandler {
             break;
             
             case 'Message':
+                if (!(event['content'] is String)) {
+                    // TODO handle system messages
+                    revoltClient._logger.debug('Received system message; ignoring');
+                    return;
+                }
+                
                 var channel = await revoltClient.channels.fetch(event['channel']);
                 var attachment = event['attachment'];
                 var message = Message(
@@ -49,16 +55,7 @@ class _RevoltEventHandler {
                     nonce: event['nonce'] ?? '',
                     content: event['content'],
                     attachment: attachment != null ?
-                        File(
-                            id: attachment['_id'],
-                            content_type: attachment['content_type'],
-                            filename: attachment['filename'],
-                            tag: attachment['tag'],
-                            filesize: attachment['size'],
-                            type: attachment['metatata']?['type'],
-                            height: attachment['metatata']?['height'],
-                            width: attachment['metatata']?['width'],
-                        ) : null,
+                        File.fromJSON(attachment) : null,
                 );
                 
                 channel.messages.cache[message.id] = message;
@@ -90,6 +87,7 @@ class _RevoltEventHandler {
                 // Update cached message object
                 channel.messages.cache[event['id']] = newMsg;
             break;
+            
             case 'MessageDelete':
                 var channel = await revoltClient.channels.fetch(event['channel']);
                 var msg = channel.messages.cache[event['id']];
@@ -101,6 +99,43 @@ class _RevoltEventHandler {
                         msg
                     );
                 }
+            break;
+            
+            case 'ChannelUpdate':
+                var channel = revoltClient.channels.cache[event['id']];
+                
+                var changes = ChannelUpdateChanges(
+                    name: event['data']['name'] != null,
+                    description: event['data']['description'] != null,
+                    image: event['data']['icon'] != null
+                );
+                
+                var update = ChannelUpdateEvent(
+                    update: event['data'] ?? jsonDecode('{}'),
+                    changes: changes,
+                    channel: channel ?? await revoltClient.channels.fetch(event['id']),
+                    oldValues: channel == null ? null : ChannelUpdateOldValues(
+                        name: channel.name,
+                        description: channel is GroupChannel ? channel.description : null,
+                        icon: channel.icon
+                    ),
+                );
+                
+                if (channel != null) {
+                    if (event['data']['name'] != null) {
+                        channel.name = event['data']['name'];
+                    }
+                    if (event['data']['description'] != null && channel is GroupChannel) {
+                        channel.description = event['data']['description'];
+                    }
+                    if (event['data']['icon'] != null) {
+                        channel.icon = File.fromJSON(event['data']['icon']);
+                    }
+                } else {
+                    channel = await revoltClient.channels.fetch(event['id']);
+                }
+                
+                revoltClient.events.emit('channel/update', null, update);
             break;
         }
         

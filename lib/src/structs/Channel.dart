@@ -17,6 +17,9 @@ abstract class Channel {
     /// All participants in this channel.
     Map<String, User>? members;
     
+    /// The channel's icon, null if undefined
+    File? icon;
+    
     /// The messages sent in this channel.
     late var messages = MessageManager(client: client, channel: this);
     
@@ -129,4 +132,52 @@ class SavedMessagesChannel extends Channel {
     }
     
     SavedMessagesChannel(Client client, { required id }) : super(client, id: id);
+}
+
+
+class ChannelUpdateEvent {
+    /// The new channel object.
+    Channel channel;
+    
+    /// Array of changed attributes.
+    /// Null if channel was not already cached.
+    ChannelUpdateChanges? changes;
+    
+    /// The update event, as returned by the API.
+    /// Probably has a `description`, `name` and/or `icon` property.
+    Map<String, dynamic> update;
+    
+    ChannelUpdateOldValues? oldValues;
+    
+    ChannelUpdateEvent({
+        required this.channel,
+        this.changes,
+        required this.update,
+        this.oldValues,
+    });
+}
+
+/// Describes which properties were changed in a [ChannelUpdateEvent].
+class ChannelUpdateChanges {
+    bool name;
+    bool description;
+    bool image;
+    
+    ChannelUpdateChanges({
+        this.name = false,
+        this.description = false,
+        this.image = false,
+    });
+}
+
+class ChannelUpdateOldValues {
+    String? name;
+    String? description;
+    File? icon;
+    
+    ChannelUpdateOldValues({
+        this.name,
+        this.description,
+        this.icon,
+    });
 }
