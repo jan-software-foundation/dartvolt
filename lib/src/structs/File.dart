@@ -1,16 +1,16 @@
 part of dartvolt;
 
 class File {
-    String id;
-    String tag;
-    String filename;
-    String content_type;
-    String? type;
-    int filesize;
+    late String id;
+    late String tag;
+    late String filename;
+    late String content_type;
+    late String? type;
+    late int filesize;
     
     /// If the file is an image
-    int? width; /// Image width
-    int? height; /// Image height
+    late int? width; /// Image width
+    late int? height; /// Image height
     
     File({
         required this.id,
@@ -22,4 +22,15 @@ class File {
         this.width,
         this.height,
     });
+    
+    File.fromJSON(Map<String, dynamic> json) {
+        id = json['_id'];
+        content_type = json['content_type'];
+        filename = json['filename'];
+        tag = json['tag'];
+        filesize = json['size'];
+        type = json['metatata']?['type'];
+        height = json['metatata']?['height'];
+        width = json['metatata']?['width'];
+    }
 }

@@ -35,16 +35,7 @@ class UserManager {
         
         var avatar = apiUser['avatar'];
         
-        user.avatar = avatar == null ? null : File(
-            content_type: avatar['content_type'],
-            filename: avatar['filename'],
-            filesize: avatar['size'],
-            id: avatar['_id'],
-            tag: avatar['tag'],
-            type: avatar['metadata']?['type'],
-            height: avatar['metadata']?['height'],
-            width: avatar['metadata']?['width']
-        );
+        user.avatar = avatar == null ? null : File.fromJSON(avatar);
         
         client.users.cache[user.id] = user;
     }

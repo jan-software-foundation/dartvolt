@@ -32,16 +32,7 @@ class MessageManager {
             channel: channel,
             nonce: msgData['nonce'],
             content: msgData['content'],
-            attachment: attachment == null ? null : File(
-                id: attachment['_id'],
-                tag: attachment['tag'],
-                filename: attachment['filename'],
-                content_type: attachment['content_type'],
-                filesize: attachment['size'],
-                type: attachment['metadata']?['type'],
-                height: attachment['metadata']?['height'],
-                width: attachment['metadata']?['width']
-            )
+            attachment: attachment == null ? null : File.fromJSON(attachment)
         );
         
         cache[id] = msg;
