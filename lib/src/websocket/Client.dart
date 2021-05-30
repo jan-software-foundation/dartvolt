@@ -47,8 +47,7 @@ class WSClient {
     
     void send(Map<String, dynamic> payload) {
         // Redact session token from payload
-        var loggedPayload = payload
-            .toString();
+        var loggedPayload = jsonEncode(payload);
         
         loggedPayload = loggedPayload.replaceAll(
             revoltClient.sessionInfo.sessionToken,
