@@ -13,6 +13,7 @@ part 'src/Client.dart';
 
 part 'src/misc/EventHandler.dart';
 part 'src/misc/logger.dart';
+part 'src/misc/Utilities.dart';
 
 part 'src/structs/AuthData.dart';
 part 'src/structs/ClientConfig.dart';

@@ -37,6 +37,9 @@ class Client {
     /// `client.events.on('APIEvent/Ready', null, (ev, ctx) { /* do something */ })`
     EventEmitter events = EventEmitter();
     
+    /// Functions that might or might not be useful
+    var utilities = UtilityFunctions();
+    
     /// Generate a new session using username/password
     Future<void> login(AuthInfo authInfo) async {
         serverConfig = await _fetchServerConfig();
