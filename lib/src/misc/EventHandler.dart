@@ -101,6 +101,70 @@ class _RevoltEventHandler {
                 }
             break;
             
+            case 'ChannelGroupJoin':
+                if (event['user'] == revoltClient.user.id) {
+                    // channel/join event
+                    
+                    var channel = await revoltClient.channels.fetch(event['id']);
+                    
+                    revoltClient.events.emit('channel/join', null, channel);
+                } else {
+                    // channel/userAdded event
+                    
+                    var channel = await revoltClient.channels.fetch(event['id']);
+                    var user = await revoltClient.users.fetch(event['user']);
+                    
+                    if (channel.partial) await channel.fetch();
+                    
+                    if (channel.members?[event['user']] == null) {
+                        channel.members?[event['user']] = user;
+                    }
+                    
+                    revoltClient.events.emit(
+                        'channel/userAdded',
+                        null,
+                        ChannelMemberAddEvent(channel: channel, user: user)
+                    );
+                }
+            break;
+            
+            case 'ChannelGroupLeave':
+                if (event['user'] == revoltClient.user.id) {
+                    // channel/leave event
+                    
+                    if (revoltClient.channels.cache[event['id']] != null) {
+                        revoltClient.channels.cache.remove(event['id']);
+                    }
+                    
+                    revoltClient.events.emit(
+                        'channel/leave',
+                        null,
+                        event['id']
+                    );
+                } else {
+                    // channel/userLeave event
+                    
+                    var channel = await revoltClient.channels.fetch(event['id']);
+                    var user = revoltClient.users.cache[event['user']] ?? User(
+                        revoltClient,
+                        id: event['user']
+                    );
+                    
+                    if (channel.members?[event['id']] != null) {
+                        channel.members?.remove(event['id']);
+                    }
+                    
+                    revoltClient.events.emit(
+                        'channel/userLeave',
+                        null,
+                        ChannelMemberLeaveEvent(
+                            channel: channel,
+                            user: user
+                        )
+                    );
+                }
+            break;
+            
             case 'ChannelUpdate':
                 var channel = revoltClient.channels.cache[event['id']];
                 
@@ -144,4 +208,16 @@ class _RevoltEventHandler {
     _RevoltEventHandler(revoltClient) {
         this.revoltClient = revoltClient;
     }
+}
+
+class ChannelMemberAddEvent {
+    Channel channel;
+    User user;
+    ChannelMemberAddEvent({ required this.channel, required this.user });
+}
+
+class ChannelMemberLeaveEvent {
+    Channel channel;
+    User user;
+    ChannelMemberLeaveEvent({ required this.channel, required this.user });
 }
