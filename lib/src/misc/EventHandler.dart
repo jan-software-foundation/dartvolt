@@ -201,6 +201,53 @@ class _RevoltEventHandler {
                 
                 revoltClient.events.emit('channel/update', null, update);
             break;
+            
+            case 'UserUpdate':
+                User user;
+                if (revoltClient.users.cache[event['id']] == null) {
+                    user = await revoltClient.users.fetch(event['id']);
+                } else {
+                    user = revoltClient.users.cache[event['id']] as User;
+                    
+                    var data = event['data'];
+                    if (data['username'] != null) {
+                        user.name = data['username'];
+                    }
+                    if (data['avatar'] != null) {
+                        user.avatar = File.fromJSON(data['avatar']);
+                    }
+                    if (data['status']?['text'] != null) {
+                        user.status?.text = data['status']?['text'];
+                    }
+                    if (data['status']?['presence'] != null) {
+                        switch(data['status']?['presence']) {
+                            case 'Online':
+                                user.status?.presence = UserPresence.Online;
+                            break;
+                            case 'Idle':
+                                user.status?.presence = UserPresence.Idle;
+                            break;
+                            case 'Busy':
+                                user.status?.presence = UserPresence.Busy;
+                            break;
+                            case 'Invisible':
+                                user.status?.presence = UserPresence.Offline;
+                            break;
+                            default:
+                                user.status?.presence = null;
+                        }
+                    }
+                    if (data['online'] != null) {
+                        user.online = data['online'];
+                    }
+                }
+                
+                revoltClient.events.emit(
+                    'user/update',
+                    null,
+                    UserUpdate(user: user, data: event['data'])
+                );
+            break;
         }
         
         revoltClient.events.emit('APIEvent/$evtType', null, event);

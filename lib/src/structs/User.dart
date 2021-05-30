@@ -55,6 +55,13 @@ class User {
     User(this.client, { required this.id });
 }
 
+/// UserUpdate event
+class UserUpdate {
+    User user;
+    Map<String, dynamic> data;
+    UserUpdate({ required this.user, required this.data });
+}
+
 class UserStatus {
     /// The presence of the user.
     /// Is null unless friends with the user.

@@ -32,7 +32,8 @@ class Client {
     /// `channel/join` -> [Channel] \
     /// `channel/leave` -> [String] Channel ID \
     /// `channel/userAdded` -> [ChannelMemberAddEvent] \
-    /// `channel/userLeave` -> [ChannelMemberLeaveEvent]
+    /// `channel/userLeave` -> [ChannelMemberLeaveEvent] \
+    /// `user/update` -> [UserUpdate]
     /// 
     /// Example: \
     /// `client.events.on('ready', null, (ev, ctx) { /* do something */ })`
