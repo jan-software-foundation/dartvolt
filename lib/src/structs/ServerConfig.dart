@@ -2,7 +2,6 @@ part of dartvolt;
 
 class ServerConfig {
     String version;
-    bool registrationEnabled;
     bool emailEnabled;
     bool inviteOnly;
     bool captchaEnabled;
@@ -18,7 +17,6 @@ class ServerConfig {
     /// Create server config
     ServerConfig({
         required this.version,
-        required this.registrationEnabled,
         required this.emailEnabled,
         required this.inviteOnly,
         required this.captchaEnabled,

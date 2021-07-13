@@ -119,7 +119,6 @@ class Client {
             version:                config['revolt'],
             emailEnabled:           features['email'],
             inviteOnly:             features['invite_only'],
-            registrationEnabled:    features['registration'],
             captchaEnabled:         features['captcha']?['enabled'],
             captcha:                features['captcha']?['key'],
             januaryURL:             features['january']?['url'],
