@@ -64,40 +64,48 @@ class _RevoltEventHandler {
             break;
             
             case 'MessageUpdate':
-                var channel = await revoltClient.channels.fetch(event['channel']);
-                
-                var oldMsg = channel.messages.cache[event['id']];
-                Message newMsg;
-                if (oldMsg == null) {
-                    newMsg = await channel.messages.fetch(event['id']);
-                } else {
-                    newMsg = Message.clone(oldMsg);
-                    newMsg.content = event['data']['content'];
+                try {
+                    var channel = await revoltClient.channels.fetch(event['channel']);
+
+                    var oldMsg = channel.messages.cache[event['id']];
+                    Message newMsg;
+                    if (oldMsg == null) {
+                        newMsg = await channel.messages.fetch(event['id']);
+                    } else {
+                        newMsg = Message.clone(oldMsg);
+                        newMsg.content = event['data']['content'];
+                    }
+
+                    revoltClient.events.emit(
+                        'message/update',
+                        null,
+                        MessageEdit(
+                            oldMessage: oldMsg,
+                            newMessage: newMsg
+                        )
+                    );
+
+                    // Update cached message object
+                    channel.messages.cache[event['id']] = newMsg;
+                } catch(e) {
+                    revoltClient._logger.debug(e);
                 }
-                
-                revoltClient.events.emit(
-                    'message/update',
-                    null,
-                    MessageEdit(
-                        oldMessage: oldMsg,
-                        newMessage: newMsg
-                    )
-                );
-                
-                // Update cached message object
-                channel.messages.cache[event['id']] = newMsg;
             break;
             
             case 'MessageDelete':
-                var channel = await revoltClient.channels.fetch(event['channel']);
-                var msg = channel.messages.cache[event['id']];
-                if (msg != null) {
-                    msg.deleted = true;
-                    revoltClient.events.emit(
-                        'message/delete',
-                        null,
-                        msg
-                    );
+                try {
+                    var channel = await revoltClient.channels.fetch(event['channel']);
+                    var msg = channel.messages.cache[event['id']];
+                    if (msg != null) {
+                        msg.deleted = true;
+                        revoltClient.events.emit(
+                            'message/delete',
+                            null,
+                            msg
+                        );
+                    }
+                } catch(e) {
+                    revoltClient._logger.debug(e);
                 }
             break;
             
