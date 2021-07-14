@@ -74,13 +74,16 @@ abstract class Channel {
     }
     
     Channel(this.client, { required this.id }) {
-        
         if (this is GroupChannel) {
             channel_type = 'Group';
         } else if (this is DMChannel) {
             channel_type = 'DirectMessage';
         } else if (this is SavedMessagesChannel) {
             channel_type = 'SavedMessages';
+        } else if (this is TextChannel) {
+            channel_type = 'TextChannel';
+        } else if (this is VoiceChannel) {
+            channel_type = 'VoiceChannel';
         }
     }
 }
@@ -134,6 +137,64 @@ class SavedMessagesChannel extends Channel {
     SavedMessagesChannel(Client client, { required id }) : super(client, id: id);
 }
 
+class TextChannel extends Channel {
+    /// The server this text channel belongs to
+    Server? server;
+    
+    /// The channel description
+    String? description;
+    
+    /// The default permissions on this channel
+    RolePermissions? defaultPermissions;
+    
+    // TODO Add ChannelPermissions Manager
+    
+    @override
+    Future<Channel> _fetchAssignProps(Map<String, dynamic> props) async {
+        name = props['name'];
+        id = props['_id'];
+        server = await client.servers.fetch(props['server']);
+        icon = props['icon'] != null ? File.fromJSON(props['icon']) : null;
+        
+        return this;
+    }
+    
+    TextChannel(Client client, { required id }) : super(client, id: id);
+}
+
+class VoiceChannel extends Channel {
+    /// The server this voice channel belongs to
+    Server? server;
+    
+    /// The channel description
+    String? description;
+    
+    /// The default permissions on this channel
+    RolePermissions? defaultPermissions;
+    
+    // TODO Add ChannelPermissions Manager
+    
+    @override
+    Future<Channel> _fetchAssignProps(Map<String, dynamic> props) async {
+        name = props['name'];
+        id = props['_id'];
+        server = await client.servers.fetch(props['server']);
+        icon = props['icon'] != null ? File.fromJSON(props['icon']) : null;
+        
+        return this;
+    }
+    
+    // I don't know if it's possible to remove
+    // inherited functions but this works too
+    @override
+    Future<void> send(message) async {
+        client._logger.warn(
+            'send() has been invoked on a voice channel Object.'
+        );
+    }
+    
+    VoiceChannel(Client client, { required id }) : super(client, id: id);
+}
 
 class ChannelUpdateEvent {
     /// The new channel object.

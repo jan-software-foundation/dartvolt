@@ -43,8 +43,6 @@ class UserManager {
     // Gets an user from the cache, or creates one if not present
     User _getOrCreateUser(String id) {
         if (cache[id] != null) {
-            // its not unnecessary, its literally required
-            // blongus vscode
             // ignore: unnecessary_cast
             return (cache as Map)[id];
         } else {

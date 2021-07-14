@@ -42,6 +42,10 @@ class MessageManager {
     MessageManager({ required this.client, required this.channel });
 }
 
+class MessageCache {
+    var _messages = <String, Message>{};
+}
+
 /// Used for the Revolt Client to associate
 /// message IDs to their respective channel
 class ClientMessageManager {

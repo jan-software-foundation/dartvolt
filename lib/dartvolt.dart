@@ -20,10 +20,15 @@ part 'src/structs/ClientConfig.dart';
 part 'src/structs/ServerConfig.dart';
 part 'src/structs/Channel.dart';
 part 'src/structs/User.dart';
-part 'src/structs/Managers/ChannelManager.dart';
-part 'src/structs/Managers/UserManager.dart';
 part 'src/structs/File.dart';
 part 'src/structs/Message.dart';
+part 'src/structs/Managers/ChannelManager.dart';
+part 'src/structs/Managers/UserManager.dart';
 part 'src/structs/Managers/MessageManager.dart';
+part 'src/structs/Managers/ServerManager.dart';
+part 'src/structs/Servers/Server.dart';
+part 'src/structs/Servers/Category.dart';
+part 'src/structs/Servers/Role.dart';
+part 'src/structs/Servers/Permissions.dart';
 
 part 'src/websocket/Client.dart';

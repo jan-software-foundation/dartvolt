@@ -12,9 +12,10 @@ class Client {
     var _authStarted = false;
     late SessionInfo sessionInfo;
     
-    late var users = UserManager(this);
+    late var users    = UserManager(this);
     late var channels = ChannelManager(this);
     late var messages = ClientMessageManager(this);
+    late var servers  = ServerManager(this);
     
     /// The user the client logged in as.
     late User user;

@@ -9,8 +9,9 @@ class _RevoltEventHandler {
             case 'Ready':
                 // Store all users and channels
                 // received in the initial Ready event
-                var users    = event['users'];
-                var channels = event['channels'];
+                List<dynamic> users    = event['users'];
+                List<dynamic> channels = event['channels'];
+                List<dynamic> servers  = event['servers'];
                 
                 users.forEach((user) {
                     try {
@@ -25,6 +26,14 @@ class _RevoltEventHandler {
                         revoltClient.channels._storeAPIChannel(channel);
                     } catch(e) {
                         revoltClient._logger.warn('Failed to store channel: $e');
+                    }
+                });
+                
+                servers.forEach((server) {
+                    try {
+                        revoltClient.servers._storeAPIServer(server);
+                    } catch(e) {
+                        revoltClient._logger.warn('Failed to store server: $e');
                     }
                 });
                 

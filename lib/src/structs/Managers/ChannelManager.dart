@@ -77,6 +77,14 @@ class ChannelManager {
                 var channel = SavedMessagesChannel(client, id: id);
                 await channel.fetch(preferCached: false);
                 return channel;
+            case ChannelType.TextChannel:
+                var channel = TextChannel(client, id: id);
+                await channel.fetch(preferCached: false);
+                return channel;
+            case ChannelType.VoiceChannel:
+                var channel = VoiceChannel(client, id: id);
+                await channel.fetch(preferCached: false);
+                return channel;
             default: throw 'Unknown channel type';
         }
     }
@@ -94,6 +102,10 @@ class ChannelManager {
                 return ChannelType.DMChannel;
             case 'SavedMessages':
                 return ChannelType.SavedMessagesChannel;
+            case 'TextChannel':
+                return ChannelType.TextChannel;
+            case 'VoiceChannel':
+                return ChannelType.VoiceChannel;
             default:
                 throw 'Received invalid channel type. Expected one of either '
                 'Group, DirectMessage, or SavedMessages; received $channelType'
@@ -108,4 +120,6 @@ enum ChannelType {
     GroupChannel,
     DMChannel,
     SavedMessagesChannel,
+    TextChannel,
+    VoiceChannel
 }
