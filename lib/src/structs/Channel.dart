@@ -27,6 +27,10 @@ abstract class Channel {
     /// Either `Group`, `DirectMessage` or `SavedMessages`.
     late String channel_type;
     
+    /// The channel description. Only present
+    /// on TextChannel, VoiceChannel or GroupChannel.
+    String? description;
+    
     /// Whether the channel is fully fetched.
     /// If false, only [id] is quaranteed to be present.
     bool partial = true;
@@ -155,6 +159,7 @@ class TextChannel extends Channel {
         id = props['_id'];
         server = await client.servers.fetch(props['server']);
         icon = props['icon'] != null ? File.fromJSON(props['icon']) : null;
+        description = props['description'];
         
         return this;
     }
@@ -180,6 +185,8 @@ class VoiceChannel extends Channel {
         id = props['_id'];
         server = await client.servers.fetch(props['server']);
         icon = props['icon'] != null ? File.fromJSON(props['icon']) : null;
+        description = props['description'];
+        //members = server.users;
         
         return this;
     }

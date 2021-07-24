@@ -5,7 +5,7 @@ class User {
     Client client;
     
     /// The user's user ID.
-    String id;
+    late String id;
     
     /// The user's username.
     String? name;
@@ -18,11 +18,11 @@ class User {
     
     /// Your relationship with this user, Friends, Blocked or None.
     /// Defaults to None.
-    UserRelationship relationship = UserRelationship.None;
+    late UserRelationship relationship = UserRelationship.None;
     
     /// Whether the user is online.
     /// Will default to false if online status is unknown.
-    bool online = false;
+    late bool online = false;
     
     /// The user's status. Includes their presence and text status.
     UserStatus? status;
@@ -53,6 +53,26 @@ class User {
     }
     
     User(this.client, { required this.id });
+    
+    User.fromJSON(this.client, Map<String, dynamic> data) {
+        id = data['_id'];
+        name = data['username'];
+        avatar = data['avatar'] != null ? File.fromJSON(data['avatar']) : null;
+        // data['relations']
+        // data['badges']
+        status = UserStatus(
+            presence: data['status']?['presence'],
+            text: data['status']?['text'],
+        );
+        switch(data['relationship']?['status']) {
+            case 'Blocked': relationship = UserRelationship.Blocked; break;
+            case 'Friends': relationship = UserRelationship.Friends; break;
+            default:        relationship = UserRelationship.None;    break;
+        }
+        online = data['online'] ?? false;
+        
+        partial = false;
+    }
 }
 
 /// UserUpdate event

@@ -197,7 +197,7 @@ class _RevoltEventHandler {
                     channel: channel ?? await revoltClient.channels.fetch(event['id']),
                     oldValues: channel == null ? null : ChannelUpdateOldValues(
                         name: channel.name,
-                        description: channel is GroupChannel ? channel.description : null,
+                        description: channel.description,
                         icon: channel.icon
                     ),
                 );
@@ -206,7 +206,11 @@ class _RevoltEventHandler {
                     if (event['data']['name'] != null) {
                         channel.name = event['data']['name'];
                     }
-                    if (event['data']['description'] != null && channel is GroupChannel) {
+                    if (event['data']['description'] != null && (
+                        channel is GroupChannel ||
+                        channel is TextChannel ||
+                        channel is VoiceChannel
+                    )) {
                         channel.description = event['data']['description'];
                     }
                     if (event['data']['icon'] != null) {

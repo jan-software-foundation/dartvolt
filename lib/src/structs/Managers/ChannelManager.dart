@@ -17,6 +17,12 @@ class ChannelManager {
             case 'SavedMessages':
                 channel = SavedMessagesChannel(client, id: apiChannel['_id']);
             break;
+            case 'TextChannel':
+                channel = TextChannel(client, id: apiChannel['_id']);
+            break;
+            case 'VoiceChannel':
+                channel = VoiceChannel(client, id: apiChannel['_id']);
+            break;
             default: throw 'Invalid channel';
         }
         
@@ -34,12 +40,17 @@ class ChannelManager {
         
         channel.icon = apiChannel['icon'] == null ? null : File.fromJSON(apiChannel['icon']);
         
-        (apiChannel['recipients'] as List<dynamic>).forEach((uid) {
-            if (uid != null) {
-                (channel.members as Map<String, User>)[uid] =
-                    client.users.cache[uid] ?? User(client, id: uid);
-            }
-        });
+        if (channel is GroupChannel ||
+            channel is DMChannel ||
+            channel is SavedMessagesChannel
+        ) {
+            (apiChannel['recipients'] as List<dynamic>).forEach((uid) {
+                if (uid != null) {
+                    (channel.members as Map<String, User>)[uid] =
+                        client.users.cache[uid] ?? User(client, id: uid);
+                }
+            });
+        }
         
         client.channels.cache[channel.id] = channel;
     }
@@ -108,7 +119,8 @@ class ChannelManager {
                 return ChannelType.VoiceChannel;
             default:
                 throw 'Received invalid channel type. Expected one of either '
-                'Group, DirectMessage, or SavedMessages; received $channelType'
+                'Group, DirectMessage, SavedMessages, TextChannel '
+                'or VoiceChannel; received $channelType'
                 '\nChannel object: ${jsonDecode(res.body)}';
         }
     }

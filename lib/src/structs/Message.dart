@@ -26,6 +26,11 @@ class Message {
     /// The file attached to this message
     File? attachment;
     
+    /// The server this message was sent in.
+    /// Not available if message was sent in
+    /// Group/DM/SavedMessages channel.
+    Server? server;
+    
     Message(this.client, {
         required this.id,
         required this.author,
@@ -33,8 +38,12 @@ class Message {
         required this.nonce,
         this.content,
         this.attachment,
+        this.server,
     }) {
         client.messages._pushMessage(this);
+        if (channel is TextChannel) {
+            server = (channel as TextChannel).server;
+        }
     }
     
     /// Utility function to duplicate the message object
@@ -45,7 +54,8 @@ class Message {
         channel: message.channel,
         nonce: message.nonce,
         content: message.content,
-        attachment: message.attachment
+        attachment: message.attachment,
+        server: message.server
     );
 }
 

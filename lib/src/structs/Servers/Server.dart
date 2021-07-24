@@ -36,6 +36,8 @@ class Server {
     /// Properties: `user joined`, `user left`, `user kicked`, `user banned`
     Map<String, dynamic> systemMessages;
     
+    late var members = ServerMemberManager(client, server: this);
+    
     /// Server icon
     File? icon;
     
