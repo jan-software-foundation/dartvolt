@@ -44,6 +44,11 @@ class Server {
     /// Server banner
     File? banner;
     
+    /// Fetches a member or gets it from cache
+    Future<Member?> member(String id) async {
+        return await members.fetch(id);
+    }
+    
     Server(this.client, {
         required this.id,
         required this.nonce,

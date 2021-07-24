@@ -38,5 +38,26 @@ class ServerMemberManager {
         return cache;
     }
     
+    Future<Member> fetch(String id, { preferCache = true }) async {
+        if (preferCache && cache[id] != null) {
+            return cache[id]!;
+        }
+        
+        var sid = server.id;
+        
+        var res = await http.get(
+            Uri.parse(client.clientConfig.apiUrl + '/servers/$sid/members/$id'),
+            headers: client._authHeaders
+        );
+        if (res.statusCode != 200) {
+            throw 'Cannot fetch member: ${res.statusCode} - ${res.body}';
+        }
+        var body = jsonDecode(res.body);
+        
+        var member = Member.fromJSON(client, body);
+        cache[id] = member;
+        return member;
+    }
+    
     ServerMemberManager(this.client, { required this.server });
 }
