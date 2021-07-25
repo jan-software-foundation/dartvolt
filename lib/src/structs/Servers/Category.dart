@@ -11,7 +11,7 @@ class Category {
     String title;
     
     /// Array of the channels in this category
-    List<Channel> channels;
+    Map<String, Channel> channels;
     
     Category(this.client, {
         required this.id,

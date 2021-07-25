@@ -6,26 +6,24 @@ class ServerManager {
     Map<String, Server> cache = {};
     
     Future<Server> _storeAPIServer(Map<String, dynamic> APIServer) async {
-        var channels = <Channel>[];
+        var channels = <String, Channel>{};
         (APIServer['channels'] as List<dynamic>).forEach((channelID) async {
             var channel = await client.channels.fetch(channelID);
-            channels.add(channel);
+            channels[channel.id] = channel;
         });
         
-        var categories = <Category>[];
+        var categories = <String, Category>{};
         ((APIServer['categories'] ?? <String>[]) as List<dynamic>).forEach((category) {
-            var categoryChannels = <Channel>[];
+            var categoryChannels = <String, Channel>{};
             (category['channels'] as List<dynamic>).forEach((channelID) async {
                 var channel = await client.channels.fetch(channelID);
-                categoryChannels.add(channel);
+                categoryChannels[channel.id] = channel;
             });
             
-            categories.add(
-                Category(client,
-                    id: category['id'],
-                    title: category['title'],
-                    channels: categoryChannels
-                )
+            categories[category['id']] = Category(client,
+                id: category['id'],
+                title: category['title'],
+                channels: categoryChannels
             );
         });
         

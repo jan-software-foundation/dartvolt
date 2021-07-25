@@ -26,10 +26,14 @@ class Client {
     /// Emits the following events:
     /// 
     /// `ready` -> [Client] \
+    /// `authenticated` -> [null] \
     /// `message/create` -> [Message] \
     /// `message/update` -> [MessageEdit] \
     /// `message/delete` -> [Message] \
+    /// `channel/create` -> [Channel] \
     /// `channel/update` -> [ChannelUpdateEvent] \
+    /// `channel/delete` -> [Channel] The cached channel,
+    ///  or a partial DummyChannel object \
     /// `channel/join` -> [Channel] \
     /// `channel/leave` -> [String] Channel ID \
     /// `channel/userAdded` -> [ChannelMemberAddEvent] \

@@ -20,10 +20,10 @@ class Server {
     String? description;
     
     /// The Channels in this Server
-    List<Channel> channels;
+    Map<String, Channel> channels;
     
     /// The categories in this Server
-    List<Category> categories;
+    Map<String, Category> categories;
     
     /// Array of the roles in this Server
     List<Role> roles;

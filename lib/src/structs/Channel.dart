@@ -35,6 +35,9 @@ abstract class Channel {
     /// If false, only [id] is quaranteed to be present.
     bool partial = true;
     
+    /// If the channel has been deleted
+    bool deleted = false;
+    
     /// Takes the values fetched by [_fetchSelf()]
     /// and assigns them to itself
     void _fetchAssignProps(Map<String, dynamic> props);
@@ -92,6 +95,15 @@ abstract class Channel {
     }
 }
 
+class DummyChannel extends Channel {
+    @override
+    void _fetchAssignProps(Map<String, dynamic> props) {
+        throw '_fetchAssignProps() was called on a DummyChannel';
+    }
+    
+    DummyChannel(Client client, { required id }) : super(client, id: id);
+}
+
 class GroupChannel extends Channel {
     /// The ID of the channel's owner.
     String? ownerId;
@@ -141,16 +153,17 @@ class SavedMessagesChannel extends Channel {
     SavedMessagesChannel(Client client, { required id }) : super(client, id: id);
 }
 
-class TextChannel extends Channel {
-    /// The server this text channel belongs to
+abstract class ServerBaseChannel extends Channel {
+    /// The server this channel belongs to
     Server? server;
-    
-    /// The channel description
-    String? description;
     
     /// The default permissions on this channel
     RolePermissions? defaultPermissions;
     
+    ServerBaseChannel(Client client, { required id }) : super(client, id: id);
+}
+
+class TextChannel extends ServerBaseChannel {
     // TODO Add ChannelPermissions Manager
     
     @override
@@ -167,16 +180,7 @@ class TextChannel extends Channel {
     TextChannel(Client client, { required id }) : super(client, id: id);
 }
 
-class VoiceChannel extends Channel {
-    /// The server this voice channel belongs to
-    Server? server;
-    
-    /// The channel description
-    String? description;
-    
-    /// The default permissions on this channel
-    RolePermissions? defaultPermissions;
-    
+class VoiceChannel extends ServerBaseChannel {    
     // TODO Add ChannelPermissions Manager
     
     @override

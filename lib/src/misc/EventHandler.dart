@@ -6,6 +6,10 @@ class _RevoltEventHandler {
     dynamic _handleWSEvent(Map<String, dynamic> event) async {
         String evtType = event['type'];
         switch(evtType) {
+            case 'Authenticated':
+                revoltClient.wsClient.connected = true;
+                revoltClient.events.emit('authenticated', null, null);
+            break;
             case 'Ready':
                 // Store all users and channels
                 // received in the initial Ready event
@@ -43,6 +47,8 @@ class _RevoltEventHandler {
                     User(revoltClient, id: revoltClient.sessionInfo.clientId);
                 
                 await revoltClient.user.fetch();
+                
+                revoltClient.wsClient.ready = true;
                 
                 revoltClient.events.emit('ready', null, revoltClient);
             break;
@@ -182,6 +188,18 @@ class _RevoltEventHandler {
                 }
             break;
             
+            case 'ChannelCreate':
+                var channel = await revoltClient.channels.fetch(event['_id']);
+                if (event['channel_type'] == 'TextChannel' ||
+                    event['channel_type'] == 'VoiceChannel'
+                ) {
+                    var server = await revoltClient.servers.fetch(event['server']);
+                    server.channels[channel.id] = channel;
+                }
+                
+                revoltClient.events.emit('channel/create', null, channel);
+            break;
+            
             case 'ChannelUpdate':
                 var channel = revoltClient.channels.cache[event['id']];
                 
@@ -221,6 +239,27 @@ class _RevoltEventHandler {
                 }
                 
                 revoltClient.events.emit('channel/update', null, update);
+            break;
+            
+            case 'ChannelDelete':
+                String id = event['id'];
+                var channel = revoltClient.channels.cache[id];
+                if (channel != null) {
+                    if (channel is ServerBaseChannel) {
+                        var server = channel.server;
+                        if (server?.channels[channel.id] != null) {
+                            server?.channels.remove(channel.id);
+                        }
+                    }
+                    revoltClient.channels.cache.remove(id);
+                    channel.deleted = true;
+                } else {
+                    channel = DummyChannel(revoltClient, id: id);
+                    channel.deleted = true;
+                }
+                
+                // ignore: unnecessary_cast
+                revoltClient.events.emit('channel/delete', null, channel as Channel);
             break;
             
             case 'UserUpdate':

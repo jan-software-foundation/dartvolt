@@ -41,8 +41,8 @@ class Message {
         this.server,
     }) {
         client.messages._pushMessage(this);
-        if (channel is TextChannel) {
-            server = (channel as TextChannel).server;
+        if (channel is ServerBaseChannel) {
+            server = (channel as ServerBaseChannel).server;
         }
     }
     
