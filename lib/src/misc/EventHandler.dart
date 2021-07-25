@@ -273,6 +273,20 @@ class _RevoltEventHandler {
                 }
             break;
             
+            case 'ServerMemberLeave':
+                if (event['user'] == revoltClient.user) {
+                    // Client left a server (or was kicked/banned)
+                    if (revoltClient.servers.cache[event['id']] != null) {
+                        revoltClient.servers.cache.remove(event['id']);
+                    }
+                    revoltClient.events.emit('server/leave', null, event['id']);
+                } else {
+                    var server = await revoltClient.servers.fetch(event['id']);
+                    server.members.cache.remove(event['user']);
+                    revoltClient.events.emit('server/memberLeave', null, event['user']);
+                }
+            break;
+            
             case 'UserUpdate':
                 User user;
                 if (revoltClient.users.cache[event['id']] == null) {

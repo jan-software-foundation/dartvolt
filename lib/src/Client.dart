@@ -42,6 +42,10 @@ class Client {
     ///  added to a new server \
     /// `server/memberJoin` -> [Member] Emitted when a user is
     ///  added to a server the client is already in \
+    /// `server/leave` -> [String] Server ID -
+    ///  Emitted when the client leaves a server \
+    /// `server/memberLeave` -> [String] User ID -
+    ///  Emitted when a user leaves a server the client is in \
     /// `user/update` -> [UserUpdate]
     /// 
     /// Example: \
