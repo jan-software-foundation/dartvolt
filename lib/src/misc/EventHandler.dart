@@ -262,6 +262,17 @@ class _RevoltEventHandler {
                 revoltClient.events.emit('channel/delete', null, channel as Channel);
             break;
             
+            case 'ServerMemberJoin':
+                var server = await revoltClient.servers.fetch(event['id']);
+                if (event['user'] == revoltClient.user.name) {
+                    // Client was added to a new server
+                    revoltClient.events.emit('server/join', null, server);
+                } else {
+                    var member = await server.members.fetch(event['user']);
+                    revoltClient.events.emit('server/memberJoin', null, member);
+                }
+            break;
+            
             case 'UserUpdate':
                 User user;
                 if (revoltClient.users.cache[event['id']] == null) {

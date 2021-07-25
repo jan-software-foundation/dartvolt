@@ -38,6 +38,10 @@ class Client {
     /// `channel/leave` -> [String] Channel ID \
     /// `channel/userAdded` -> [ChannelMemberAddEvent] \
     /// `channel/userLeave` -> [ChannelMemberLeaveEvent] \
+    /// `server/join` -> [Server] Emitted when the client is
+    ///  added to a new server \
+    /// `server/memberJoin` -> [Member] Emitted when a user is
+    ///  added to a server the client is already in \
     /// `user/update` -> [UserUpdate]
     /// 
     /// Example: \
