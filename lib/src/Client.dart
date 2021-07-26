@@ -58,7 +58,7 @@ class Client {
     /// `client.events.on('ready', null, (ev, ctx) { /* do something */ })`
     /// 
     /// You can also prefix `APIEvent/` to listen for WS events directly. \
-    /// `client.events.on('APIEvent/Ready', null, (ev, ctx) { /* do something */ })`
+    /// `client.events.on('APIEvent/Ready', null, (ev, ctx) {})`
     EventEmitter events = EventEmitter();
     
     /// Functions that might or might not be useful
@@ -114,7 +114,10 @@ class Client {
         await wsClient.connect();
     }
     
-    Future<bool> _validateSession(SessionInfo session, ClientConfig clientConfig) async {
+    Future<bool> _validateSession(
+        SessionInfo session,
+        ClientConfig clientConfig
+    ) async {
         var res = await http.get(
             Uri.parse(clientConfig.apiUrl + '/auth/check'),
             headers: _authHeaders

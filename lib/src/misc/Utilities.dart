@@ -15,7 +15,11 @@ class UtilityFunctions {
         try {
             var whileTrueFailsafe = 0;
             
-            while(iOld < arrOld.length && iNew < arrNew.length && whileTrueFailsafe < 10000) {
+            while(
+                iOld < arrOld.length &&
+                iNew < arrNew.length &&
+                whileTrueFailsafe < 10000
+            ) {
                 whileTrueFailsafe++;
                 if (whileTrueFailsafe > 10000) {
                     throw 'Too many iterations';

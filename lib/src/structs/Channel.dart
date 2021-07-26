@@ -52,7 +52,8 @@ abstract class Channel {
         var fetched = await _fetchSelf();
         
         if (fetched['channel_type'] != channel_type) {
-            throw 'Failed to fetch channel $id: Expected type $channel_type, got ${fetched['channel_type']}';
+            throw 'Failed to fetch channel $id: Expected type '
+            '$channel_type, got ${fetched['channel_type']}';
         }
         
         _fetchAssignProps(fetched);
@@ -151,7 +152,7 @@ class SavedMessagesChannel extends Channel {
         return this;
     }
     
-    SavedMessagesChannel(Client client, { required id }) : super(client, id: id);
+    SavedMessagesChannel(Client client, {required id}) : super(client, id: id);
 }
 
 abstract class ServerBaseChannel extends Channel {

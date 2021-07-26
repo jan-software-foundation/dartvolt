@@ -15,7 +15,10 @@ class ServerMemberManager {
     /// Returns the member cache
     Future<Map<String, Member>> fetchAll() async {
         var res = await http.get(
-            Uri.parse(client.clientConfig.apiUrl + '/servers/${server.id}/members'),
+            Uri.parse(
+                client.clientConfig.apiUrl +
+                '/servers/${server.id}/members'
+            ),
             headers: client._authHeaders
         );
         var body = jsonDecode(res.body);

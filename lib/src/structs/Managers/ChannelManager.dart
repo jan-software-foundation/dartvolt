@@ -38,7 +38,9 @@ class ChannelManager {
         
         channel.members ??= <String, User>{};
         
-        channel.icon = apiChannel['icon'] == null ? null : File.fromJSON(apiChannel['icon']);
+        channel.icon = apiChannel['icon'] == null ?
+            null :
+            File.fromJSON(apiChannel['icon']);
         
         if (channel is GroupChannel ||
             channel is DMChannel ||

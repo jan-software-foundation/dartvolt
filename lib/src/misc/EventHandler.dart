@@ -212,7 +212,8 @@ class _RevoltEventHandler {
                 var update = ChannelUpdateEvent(
                     update: event['data'] ?? jsonDecode('{}'),
                     changes: changes,
-                    channel: channel ?? await client.channels.fetch(event['id']),
+                    channel: channel
+                        ?? await client.channels.fetch(event['id']),
                     oldValues: channel == null ? null : ChannelUpdateOldValues(
                         name: channel.name,
                         description: channel.description,
@@ -315,7 +316,11 @@ class _RevoltEventHandler {
                 } else {
                     var server = await client.servers.fetch(event['id']);
                     server.members.cache.remove(event['user']);
-                    client.events.emit('server/memberLeave', null, event['user']);
+                    client.events.emit(
+                        'server/memberLeave',
+                        null,
+                        event['user']
+                    );
                 }
             break;
             
@@ -381,7 +386,9 @@ class _RevoltEventHandler {
                 var server = await client.servers.fetch(event['id']);
                 var roleID = event['role_id'];
                 Role role;
-                if (server.roles.indexWhere((role) => role.id == roleID) == -1) {
+                if (
+                    server.roles.indexWhere((role) => role.id == roleID) == -1
+                ) {
                     role = Role(
                         client,
                         id: roleID,

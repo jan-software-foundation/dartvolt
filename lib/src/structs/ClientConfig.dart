@@ -8,6 +8,7 @@ class ClientConfig {
     ClientConfig({
         this.apiUrl = 'https://api.revolt.chat',
         this.debug = false,
-        this.user_agent = 'dartvolt/1.0 (+https://github.com/janderedev/dartvolt)'
+        this.user_agent = 'dartvolt/1.0 '
+            '(+https://github.com/janderedev/dartvolt)'
     });
 }

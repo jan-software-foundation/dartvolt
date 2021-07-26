@@ -13,7 +13,8 @@ class ServerManager {
         });
         
         var categories = <String, Category>{};
-        ((APIServer['categories'] ?? <String>[]) as List<dynamic>).forEach((category) {
+        ((APIServer['categories'] ?? <String>[]) as List<dynamic>)
+            .forEach((category) {
             var categoryChannels = <String, Channel>{};
             (category['channels'] as List<dynamic>).forEach((channelID) async {
                 var channel = await client.channels.fetch(channelID);
