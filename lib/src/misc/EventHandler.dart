@@ -273,6 +273,38 @@ class _RevoltEventHandler {
                 }
             break;
             
+            case 'ServerMemberUpdate':
+                var server = await revoltClient.servers.fetch(event['id']['server']);
+                var member = await server.member(event['id']['user']);
+                
+                if (event['clear'] != null) {
+                    switch(event['clear']) {
+                        case 'Avatar': member?.avatar = null; break;
+                        case 'Nickname': member?.nickname = null; break;
+                    }
+                }
+                
+                var data = event['data'];
+                if (data['nickname'] != null) {
+                    member?.nickname = data['nickname'];
+                }
+                if (data['avatar'] != null) {
+                    member?.avatar = File.fromJSON(data['avatar']);
+                }
+                
+                if (data['roles'] != null) {
+                    member?.roles.clear();
+                    (data['roles'] as List<dynamic>).forEach((roleID) {
+                        member?.roles.add(
+                            server.roles.firstWhere((r) => r.id == roleID)
+                        );
+                    });
+                }
+                
+                // TODO Return a MemberUpdate instead of the new member
+                revoltClient.events.emit('server/memberUpdate', null, member);
+            break;
+            
             case 'ServerMemberLeave':
                 if (event['user'] == revoltClient.user) {
                     // Client left a server (or was kicked/banned)
