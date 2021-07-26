@@ -37,7 +37,7 @@ class Member {
         
         if (data['roles'] == null) data['roles'] = <dynamic>[];
         (data['roles'] as List<dynamic>).forEach((roleID) {
-            roles.add(server.roles[roleID]);
+            roles.add(server.roles.firstWhere((r) => r.id == roleID));
         });
     }
 }
