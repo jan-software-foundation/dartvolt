@@ -376,6 +376,51 @@ class _RevoltEventHandler {
                 client.events.emit('server/delete', null, event['id']);
             break;
             
+            case 'ServerRoleUpdate':
+                var data = event['data'] ?? <dynamic>{};
+                var server = await client.servers.fetch(event['id']);
+                var roleID = event['role_id'];
+                Role role;
+                if (server.roles.indexWhere((role) => role.id == roleID) == -1) {
+                    role = Role(
+                        client,
+                        id: roleID,
+                        name: event['data']['name'],
+                        permissions: RolePermissions(
+                            client,
+                            serverPermissions: BasePermissions(
+                                event['data']['permissions'][0],
+                                ServerPermissions
+                            ),
+                            channelPermissions: BasePermissions(
+                                event['data']['permissions'][1],
+                                ChannelPermissions
+                            )
+                        ),
+                        color: event['data']['colour']
+                    );
+                    
+                    client.events.emit('server/roleCreate', null, role);
+                } else {
+                    role = server.roles.firstWhere((role) => role.id == roleID);
+                    
+                    if (data['name'] != null) {
+                        role.name = data['name'];
+                    }
+                    if (data['colour'] != null) {
+                        role.color = data['colour'];
+                    }
+                    if (data['permissions'] != null) {
+                        var perms = data['permissions'];
+                        role.permissions.serverPermissions = perms[0];
+                        role.permissions.channelPermissions = perms[1];
+                    }
+                    
+                    // TODO return RoleUpdate instead of the role itself
+                    client.events.emit('server/roleUpdate', null, role);
+                }
+            break;
+            
             case 'UserUpdate':
                 User user;
                 if (client.users.cache[event['id']] == null) {

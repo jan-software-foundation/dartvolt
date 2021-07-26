@@ -14,7 +14,7 @@ class Role {
     RolePermissions permissions;
     
     /// The role's hex color
-    String color;
+    String? color;
     
     Role(this.client, {
         required this.id,
