@@ -1,14 +1,14 @@
 part of dartvolt;
 
 class _RevoltEventHandler {
-    late Client revoltClient;
+    late Client client;
     
     dynamic _handleWSEvent(Map<String, dynamic> event) async {
         String evtType = event['type'];
         switch(evtType) {
             case 'Authenticated':
-                revoltClient.wsClient.connected = true;
-                revoltClient.events.emit('authenticated', null, null);
+                client.wsClient.connected = true;
+                client.events.emit('authenticated', null, null);
             break;
             case 'Ready':
                 // Store all users and channels
@@ -19,53 +19,53 @@ class _RevoltEventHandler {
                 
                 users.forEach((user) {
                     try {
-                        revoltClient.users._storeAPIUser(user);
+                        client.users._storeAPIUser(user);
                     } catch(e) {
-                        revoltClient._logger.warn('Failed to store user: $e');
+                        client._logger.warn('Failed to store user: $e');
                     }
                 });
                 
                 channels.forEach((channel) {
                     try {
-                        revoltClient.channels._storeAPIChannel(channel);
+                        client.channels._storeAPIChannel(channel);
                     } catch(e) {
-                        revoltClient._logger.warn('Failed to store channel: $e');
+                        client._logger.warn('Failed to store channel: $e');
                     }
                 });
                 
                 servers.forEach((server) {
                     try {
-                        revoltClient.servers._storeAPIServer(server);
+                        client.servers._storeAPIServer(server);
                     } catch(e) {
-                        revoltClient._logger.warn('Failed to store server: $e');
+                        client._logger.warn('Failed to store server: $e');
                     }
                 });
                 
-                revoltClient.user = revoltClient
+                client.user = client
                     .users
-                    .cache[revoltClient.sessionInfo.clientId] ??
-                    User(revoltClient, id: revoltClient.sessionInfo.clientId);
+                    .cache[client.sessionInfo.clientId] ??
+                    User(client, id: client.sessionInfo.clientId);
                 
-                await revoltClient.user.fetch();
+                await client.user.fetch();
                 
-                revoltClient.wsClient.ready = true;
+                client.wsClient.ready = true;
                 
-                revoltClient.events.emit('ready', null, revoltClient);
+                client.events.emit('ready', null, client);
             break;
             
             case 'Message':
                 if (!(event['content'] is String)) {
                     // TODO handle system messages
-                    revoltClient._logger.debug('Received system message; ignoring');
+                    client._logger.debug('Received system message; ignoring');
                     return;
                 }
                 
-                var channel = await revoltClient.channels.fetch(event['channel']);
+                var channel = await client.channels.fetch(event['channel']);
                 var attachment = event['attachment'];
                 var message = Message(
-                    revoltClient,
+                    client,
                     id: event['_id'],
-                    author: revoltClient.users._getOrCreateUser(event['_id']),
+                    author: client.users._getOrCreateUser(event['_id']),
                     channel: channel,
                     nonce: event['nonce'] ?? '',
                     content: event['content'],
@@ -75,12 +75,12 @@ class _RevoltEventHandler {
                 
                 channel.messages.cache[message.id] = message;
                 
-                revoltClient.events.emit('message/create', null, message);
+                client.events.emit('message/create', null, message);
             break;
             
             case 'MessageUpdate':
                 try {
-                    var channel = await revoltClient.channels.fetch(event['channel']);
+                    var channel = await client.channels.fetch(event['channel']);
 
                     var oldMsg = channel.messages.cache[event['id']];
                     Message newMsg;
@@ -91,7 +91,7 @@ class _RevoltEventHandler {
                         newMsg.content = event['data']['content'];
                     }
 
-                    revoltClient.events.emit(
+                    client.events.emit(
                         'message/update',
                         null,
                         MessageEdit(
@@ -103,39 +103,39 @@ class _RevoltEventHandler {
                     // Update cached message object
                     channel.messages.cache[event['id']] = newMsg;
                 } catch(e) {
-                    revoltClient._logger.debug(e);
+                    client._logger.debug(e);
                 }
             break;
             
             case 'MessageDelete':
                 try {
-                    var channel = await revoltClient.channels.fetch(event['channel']);
+                    var channel = await client.channels.fetch(event['channel']);
                     var msg = channel.messages.cache[event['id']];
                     if (msg != null) {
                         msg.deleted = true;
-                        revoltClient.events.emit(
+                        client.events.emit(
                             'message/delete',
                             null,
                             msg
                         );
                     }
                 } catch(e) {
-                    revoltClient._logger.debug(e);
+                    client._logger.debug(e);
                 }
             break;
             
             case 'ChannelGroupJoin':
-                if (event['user'] == revoltClient.user.id) {
+                if (event['user'] == client.user.id) {
                     // channel/join event
                     
-                    var channel = await revoltClient.channels.fetch(event['id']);
+                    var channel = await client.channels.fetch(event['id']);
                     
-                    revoltClient.events.emit('channel/join', null, channel);
+                    client.events.emit('channel/join', null, channel);
                 } else {
                     // channel/userAdded event
                     
-                    var channel = await revoltClient.channels.fetch(event['id']);
-                    var user = await revoltClient.users.fetch(event['user']);
+                    var channel = await client.channels.fetch(event['id']);
+                    var user = await client.users.fetch(event['user']);
                     
                     if (channel.partial) await channel.fetch();
                     
@@ -143,7 +143,7 @@ class _RevoltEventHandler {
                         channel.members?[event['user']] = user;
                     }
                     
-                    revoltClient.events.emit(
+                    client.events.emit(
                         'channel/userAdded',
                         null,
                         ChannelMemberAddEvent(channel: channel, user: user)
@@ -152,14 +152,14 @@ class _RevoltEventHandler {
             break;
             
             case 'ChannelGroupLeave':
-                if (event['user'] == revoltClient.user.id) {
+                if (event['user'] == client.user.id) {
                     // channel/leave event
                     
-                    if (revoltClient.channels.cache[event['id']] != null) {
-                        revoltClient.channels.cache.remove(event['id']);
+                    if (client.channels.cache[event['id']] != null) {
+                        client.channels.cache.remove(event['id']);
                     }
                     
-                    revoltClient.events.emit(
+                    client.events.emit(
                         'channel/leave',
                         null,
                         event['id']
@@ -167,9 +167,9 @@ class _RevoltEventHandler {
                 } else {
                     // channel/userLeave event
                     
-                    var channel = await revoltClient.channels.fetch(event['id']);
-                    var user = revoltClient.users.cache[event['user']] ?? User(
-                        revoltClient,
+                    var channel = await client.channels.fetch(event['id']);
+                    var user = client.users.cache[event['user']] ?? User(
+                        client,
                         id: event['user']
                     );
                     
@@ -177,7 +177,7 @@ class _RevoltEventHandler {
                         channel.members?.remove(event['id']);
                     }
                     
-                    revoltClient.events.emit(
+                    client.events.emit(
                         'channel/userLeave',
                         null,
                         ChannelMemberLeaveEvent(
@@ -189,19 +189,19 @@ class _RevoltEventHandler {
             break;
             
             case 'ChannelCreate':
-                var channel = await revoltClient.channels.fetch(event['_id']);
+                var channel = await client.channels.fetch(event['_id']);
                 if (event['channel_type'] == 'TextChannel' ||
                     event['channel_type'] == 'VoiceChannel'
                 ) {
-                    var server = await revoltClient.servers.fetch(event['server']);
+                    var server = await client.servers.fetch(event['server']);
                     server.channels[channel.id] = channel;
                 }
                 
-                revoltClient.events.emit('channel/create', null, channel);
+                client.events.emit('channel/create', null, channel);
             break;
             
             case 'ChannelUpdate':
-                var channel = revoltClient.channels.cache[event['id']];
+                var channel = client.channels.cache[event['id']];
                 
                 var changes = ChannelUpdateChanges(
                     name: event['data']['name'] != null,
@@ -212,7 +212,7 @@ class _RevoltEventHandler {
                 var update = ChannelUpdateEvent(
                     update: event['data'] ?? jsonDecode('{}'),
                     changes: changes,
-                    channel: channel ?? await revoltClient.channels.fetch(event['id']),
+                    channel: channel ?? await client.channels.fetch(event['id']),
                     oldValues: channel == null ? null : ChannelUpdateOldValues(
                         name: channel.name,
                         description: channel.description,
@@ -235,15 +235,15 @@ class _RevoltEventHandler {
                         channel.icon = File.fromJSON(event['data']['icon']);
                     }
                 } else {
-                    channel = await revoltClient.channels.fetch(event['id']);
+                    channel = await client.channels.fetch(event['id']);
                 }
                 
-                revoltClient.events.emit('channel/update', null, update);
+                client.events.emit('channel/update', null, update);
             break;
             
             case 'ChannelDelete':
                 String id = event['id'];
-                var channel = revoltClient.channels.cache[id];
+                var channel = client.channels.cache[id];
                 if (channel != null) {
                     if (channel is ServerBaseChannel) {
                         var server = channel.server;
@@ -251,30 +251,30 @@ class _RevoltEventHandler {
                             server?.channels.remove(channel.id);
                         }
                     }
-                    revoltClient.channels.cache.remove(id);
+                    client.channels.cache.remove(id);
                     channel.deleted = true;
                 } else {
-                    channel = DummyChannel(revoltClient, id: id);
+                    channel = DummyChannel(client, id: id);
                     channel.deleted = true;
                 }
                 
                 // ignore: unnecessary_cast
-                revoltClient.events.emit('channel/delete', null, channel as Channel);
+                client.events.emit('channel/delete', null, channel as Channel);
             break;
             
             case 'ServerMemberJoin':
-                var server = await revoltClient.servers.fetch(event['id']);
-                if (event['user'] == revoltClient.user.name) {
+                var server = await client.servers.fetch(event['id']);
+                if (event['user'] == client.user.name) {
                     // Client was added to a new server
-                    revoltClient.events.emit('server/join', null, server);
+                    client.events.emit('server/join', null, server);
                 } else {
                     var member = await server.members.fetch(event['user']);
-                    revoltClient.events.emit('server/memberJoin', null, member);
+                    client.events.emit('server/memberJoin', null, member);
                 }
             break;
             
             case 'ServerMemberUpdate':
-                var server = await revoltClient.servers.fetch(event['id']['server']);
+                var server = await client.servers.fetch(event['id']['server']);
                 var member = await server.member(event['id']['user']);
                 
                 if (event['clear'] != null) {
@@ -302,26 +302,26 @@ class _RevoltEventHandler {
                 }
                 
                 // TODO Return a MemberUpdate instead of the new member
-                revoltClient.events.emit('server/memberUpdate', null, member);
+                client.events.emit('server/memberUpdate', null, member);
             break;
             
             case 'ServerMemberLeave':
-                if (event['user'] == revoltClient.user) {
+                if (event['user'] == client.user) {
                     // Client left a server (or was kicked/banned)
-                    if (revoltClient.servers.cache[event['id']] != null) {
-                        revoltClient.servers.cache.remove(event['id']);
+                    if (client.servers.cache[event['id']] != null) {
+                        client.servers.cache.remove(event['id']);
                     }
-                    revoltClient.events.emit('server/leave', null, event['id']);
+                    client.events.emit('server/leave', null, event['id']);
                 } else {
-                    var server = await revoltClient.servers.fetch(event['id']);
+                    var server = await client.servers.fetch(event['id']);
                     server.members.cache.remove(event['user']);
-                    revoltClient.events.emit('server/memberLeave', null, event['user']);
+                    client.events.emit('server/memberLeave', null, event['user']);
                 }
             break;
             
             case 'ServerUpdate':
                 print(jsonEncode(event));
-                var server = await revoltClient.servers.fetch(event['id']);
+                var server = await client.servers.fetch(event['id']);
                 var changes = _ServerUpdateChanges();
                 
                 if (event['clear'] != null) {
@@ -364,7 +364,7 @@ class _RevoltEventHandler {
                     }
                 }
                 
-                revoltClient.events.emit('server/update', null, ServerUpdate(
+                client.events.emit('server/update', null, ServerUpdate(
                     server: server,
                     data: event['data'],
                     changes: changes
@@ -372,16 +372,16 @@ class _RevoltEventHandler {
             break;
             
             case 'ServerDelete':
-                revoltClient.servers.cache.remove(event['id']);
-                revoltClient.events.emit('server/delete', null, event['id']);
+                client.servers.cache.remove(event['id']);
+                client.events.emit('server/delete', null, event['id']);
             break;
             
             case 'UserUpdate':
                 User user;
-                if (revoltClient.users.cache[event['id']] == null) {
-                    user = await revoltClient.users.fetch(event['id']);
+                if (client.users.cache[event['id']] == null) {
+                    user = await client.users.fetch(event['id']);
                 } else {
-                    user = revoltClient.users.cache[event['id']] as User;
+                    user = client.users.cache[event['id']] as User;
                     
                     var data = event['data'];
                     if (data['username'] != null) {
@@ -416,7 +416,7 @@ class _RevoltEventHandler {
                     }
                 }
                 
-                revoltClient.events.emit(
+                client.events.emit(
                     'user/update',
                     null,
                     UserUpdate(user: user, data: event['data'])
@@ -425,14 +425,14 @@ class _RevoltEventHandler {
             
             // Deprecated afaik
             case 'UserPresence':
-                var user = await revoltClient.users.fetch(event['id']);
+                var user = await client.users.fetch(event['id']);
                 user.online = event['online'];
             break;
         }
         
-        revoltClient.events.emit('APIEvent/$evtType', null, event);
+        client.events.emit('APIEvent/$evtType', null, event);
     }
     _RevoltEventHandler(revoltClient) {
-        this.revoltClient = revoltClient;
+        this.client = revoltClient;
     }
 }
