@@ -98,7 +98,9 @@ class ChannelManager {
                 var channel = VoiceChannel(client, id: id);
                 await channel.fetch(preferCached: false);
                 return channel;
-            default: throw 'Unknown channel type';
+            default:
+                var channel = DummyChannel(client, id: id);
+                return channel;
         }
     }
     
