@@ -94,6 +94,18 @@ class UserStatus {
     UserStatus({ this.presence, this.text });
 }
 
+class RelationshipUpdate {
+    User user;
+    UserRelationship relationship;
+    String relationshipID;
+    
+    RelationshipUpdate({
+        required this.user,
+        required this.relationship,
+        required this.relationshipID
+    });
+}
+
 /// A user's presence.
 enum UserPresence {
     Online,

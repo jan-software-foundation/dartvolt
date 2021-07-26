@@ -6,7 +6,8 @@ class UserManager {
     
     /// Parse a user object received from
     /// the API and store it to the cache.
-    void _storeAPIUser(Map<String, dynamic> apiUser) {
+    /// Returns the user.
+    User _storeAPIUser(Map<String, dynamic> apiUser) {
         var user = User(
             client,
             id: apiUser['_id']
@@ -38,6 +39,7 @@ class UserManager {
         user.avatar = avatar == null ? null : File.fromJSON(avatar);
         
         client.users.cache[user.id] = user;
+        return user;
     }
     
     // Gets an user from the cache, or creates one if not present

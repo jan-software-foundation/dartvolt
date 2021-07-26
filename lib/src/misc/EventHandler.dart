@@ -476,6 +476,23 @@ class _RevoltEventHandler {
                 );
             break;
             
+            case 'UserRelationship':
+                // event['status'] contains the new relationship
+                // status, but it is also reported in the user object.
+                // Parsing the new user is enough to update it.
+                var user = client.users._storeAPIUser(event['user']);
+                
+                client.events.emit(
+                    'user/relationship',
+                    null,
+                    RelationshipUpdate(
+                        user: user,
+                        relationship: user.relationship,
+                        relationshipID: event['id']
+                    )
+                );
+            break;
+            
             // Deprecated afaik
             case 'UserPresence':
                 var user = await client.users.fetch(event['id']);
