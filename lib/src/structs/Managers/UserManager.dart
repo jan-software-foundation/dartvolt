@@ -8,10 +8,16 @@ class UserManager {
     /// the API and store it to the cache.
     /// Returns the user.
     User _storeAPIUser(Map<String, dynamic> apiUser) {
-        var user = User(
-            client,
-            id: apiUser['_id']
-        );
+        User user;
+        if (cache[apiUser['_id']] == null) {
+            user = User(
+                client,
+                id: apiUser['_id']
+            );
+        } else {
+            user = cache[apiUser['_id']]!;
+        }
+        
         user.partial = false;
         user.name = apiUser['username'];
         user.friends = apiUser['username'] == 'Friend';
