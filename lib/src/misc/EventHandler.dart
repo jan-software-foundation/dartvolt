@@ -407,6 +407,8 @@ class _RevoltEventHandler {
                         color: event['data']['colour']
                     );
                     
+                    server.roles.add(role);
+                    
                     client.events.emit('server/roleCreate', null, role);
                 } else {
                     role = server.roles.firstWhere((role) => role.id == roleID);
@@ -419,8 +421,8 @@ class _RevoltEventHandler {
                     }
                     if (data['permissions'] != null) {
                         var perms = data['permissions'];
-                        role.permissions.serverPermissions = perms[0];
-                        role.permissions.channelPermissions = perms[1];
+                        role.permissions.serverPermissions.bitfield = perms[0];
+                        role.permissions.channelPermissions.bitfield = perms[1];
                     }
                     
                     // TODO return RoleUpdate instead of the role itself
