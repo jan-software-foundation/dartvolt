@@ -478,6 +478,6 @@ class _RevoltEventHandler {
         client.events.emit('APIEvent/$evtType', null, event);
     }
     _RevoltEventHandler(revoltClient) {
-        this.client = revoltClient;
+        client = revoltClient;
     }
 }

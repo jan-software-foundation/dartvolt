@@ -112,6 +112,7 @@ class GroupChannel extends Channel {
     User? owner;
     
     // The channel's description.
+    @override
     String? description;
     
     @override
