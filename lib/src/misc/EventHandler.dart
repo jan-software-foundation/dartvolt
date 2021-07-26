@@ -436,6 +436,13 @@ class _RevoltEventHandler {
                 } else {
                     user = client.users.cache[event['id']] as User;
                     
+                    if (event['clear'] != null) {
+                        switch(event['clear']) {
+                            case 'Avatar': user.avatar = null; break;
+                            case 'StatusText': user.status?.text = null; break;
+                        }
+                    }
+                    
                     var data = event['data'];
                     if (data['username'] != null) {
                         user.name = data['username'];
