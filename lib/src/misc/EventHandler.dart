@@ -385,6 +385,12 @@ class _RevoltEventHandler {
                     UserUpdate(user: user, data: event['data'])
                 );
             break;
+            
+            // Deprecated afaik
+            case 'UserPresence':
+                var user = await revoltClient.users.fetch(event['id']);
+                user.online = event['online'];
+            break;
         }
         
         revoltClient.events.emit('APIEvent/$evtType', null, event);
