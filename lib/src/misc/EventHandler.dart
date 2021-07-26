@@ -421,6 +421,14 @@ class _RevoltEventHandler {
                 }
             break;
             
+            case 'ServerRoleDelete':
+                var server = client.servers.cache[event['id']];
+                if (server != null) {
+                    server.roles.remove(event['role_id']);
+                }
+                client.events.emit('server/roleDelete', null, event['role_id']);
+            break;
+            
             case 'UserUpdate':
                 User user;
                 if (client.users.cache[event['id']] == null) {
