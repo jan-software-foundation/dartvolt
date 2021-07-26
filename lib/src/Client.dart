@@ -47,9 +47,12 @@ class Client {
     /// `server/memberLeave` -> [String] User ID -
     ///  Emitted when a user leaves a server the client is in \
     /// `server/memberUpdate` -> [Member] \
+    /// `server/roleUpdate` -> [Role] \
+    /// `server/roleDelete` -> [String] Role ID \
     /// `server/update` -> [ServerUpdate] \
     /// `server/delete` -> [String] ID of the deleted server \
-    /// `user/update` -> [UserUpdate]
+    /// `user/update` -> [UserUpdate] \
+    /// `user/relationship` -> [RelationshipUpdate]
     /// 
     /// Example: \
     /// `client.events.on('ready', null, (ev, ctx) { /* do something */ })`
