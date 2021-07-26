@@ -70,7 +70,12 @@ class ServerManager {
             categories: categories,
             roles: roles,
             defaultPermissions: defaultPermissions,
-            systemMessages: APIServer['system_messages']
+            systemMessages: ServerSystemMessages(
+                user_joined: APIServer['system_messages']['user_joined'],
+                user_left:   APIServer['system_messages']['user_left'],
+                user_kicked: APIServer['system_messages']['user_kicked'],
+                user_banned: APIServer['system_messages']['user_banned'],
+            )
         );
         
         cache[server.id] = server;

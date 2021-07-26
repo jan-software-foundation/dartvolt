@@ -31,10 +31,8 @@ class Server {
     /// Default permissions object
     RolePermissions defaultPermissions;
     
-    /// Don't know what this is for but the docs specify it
-    /// https://developers.revolt.chat/api/#tag/Server-Information/paths/~1servers~1:server/get \
-    /// Properties: `user joined`, `user left`, `user kicked`, `user banned`
-    Map<String, dynamic> systemMessages;
+    /// The channels system messages are sent to, or null if disabled.
+    ServerSystemMessages systemMessages;
     
     late var members = ServerMemberManager(client, server: this);
     
@@ -62,5 +60,51 @@ class Server {
         required this.systemMessages,
         this.icon,
         this.banner
+    });
+}
+
+class ServerSystemMessages {
+    String? user_joined;
+    String? user_left;
+    String? user_kicked;
+    String? user_banned;
+    
+    ServerSystemMessages({
+        this.user_joined,
+        this.user_left,
+        this.user_kicked,
+        this.user_banned,
+    });
+    
+    ServerSystemMessages.fromJSON(Map<String, dynamic> json) {
+        user_joined = json['user_joined'];
+        user_left   = json['user_left'];
+        user_kicked = json['user_kicked'];
+        user_banned = json['user_banned'];
+    }
+}
+
+class ServerUpdate {
+    Server server;
+    Map<String, dynamic> data;
+    _ServerUpdateChanges changes;
+    
+    ServerUpdate({
+        required this.server,
+        required this.data,
+        required this.changes
+    });
+}
+
+class _ServerUpdateChanges {
+    bool description;
+    bool system_messages;
+    bool icon;
+    bool banner;
+    _ServerUpdateChanges({
+        this.banner = false,
+        this.description = false,
+        this.icon = false,
+        this.system_messages = false,
     });
 }

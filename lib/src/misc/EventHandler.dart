@@ -287,6 +287,58 @@ class _RevoltEventHandler {
                 }
             break;
             
+            case 'ServerUpdate':
+                print(jsonEncode(event));
+                var server = await revoltClient.servers.fetch(event['id']);
+                var changes = _ServerUpdateChanges();
+                
+                if (event['clear'] != null) {
+                    switch(event['clear']) {
+                        case 'Icon':
+                            server.icon = null;
+                            changes.icon = true; break;
+                        case 'Banner':
+                            server.banner = null;
+                            changes.banner = true; break;
+                        case 'Description':
+                            server.description = null;
+                            changes.description = true; break;
+                    }
+                }
+                
+                if (event['data'] != null) {
+                    var data = event['data'];
+                    
+                    if (data['description'] != null) {
+                        server.description = data['description'];
+                        changes.description = true;
+                    }
+                    
+                    if (data['system_messages'] != null) {
+                        server.systemMessages = ServerSystemMessages.fromJSON(
+                            data['system_messages']
+                        );
+                        changes.system_messages = true;
+                    }
+                    
+                    if (data['icon'] != null) {
+                        server.icon = File.fromJSON(data['icon']);
+                        changes.icon = true;
+                    }
+                    
+                    if (data['banner'] != null) {
+                        server.banner = File.fromJSON(data['banner']);
+                        changes.banner = true;
+                    }
+                }
+                
+                revoltClient.events.emit('server/update', null, ServerUpdate(
+                    server: server,
+                    data: event['data'],
+                    changes: changes
+                ));
+            break;
+            
             case 'UserUpdate':
                 User user;
                 if (revoltClient.users.cache[event['id']] == null) {
