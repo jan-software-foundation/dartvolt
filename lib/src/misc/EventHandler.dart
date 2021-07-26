@@ -339,6 +339,11 @@ class _RevoltEventHandler {
                 ));
             break;
             
+            case 'ServerDelete':
+                revoltClient.servers.cache.remove(event['id']);
+                revoltClient.events.emit('server/delete', null, event['id']);
+            break;
+            
             case 'UserUpdate':
                 User user;
                 if (revoltClient.users.cache[event['id']] == null) {

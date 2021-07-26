@@ -47,6 +47,7 @@ class Client {
     /// `server/memberLeave` -> [String] User ID -
     ///  Emitted when a user leaves a server the client is in \
     /// `server/update` -> [ServerUpdate] \
+    /// `server/delete` -> [String] ID of the deleted server \
     /// `user/update` -> [UserUpdate]
     /// 
     /// Example: \
