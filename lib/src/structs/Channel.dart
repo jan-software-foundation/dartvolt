@@ -253,3 +253,15 @@ class ChannelUpdateOldValues {
         this.icon,
     });
 }
+
+class ChannelMemberAddEvent {
+    Channel channel;
+    User user;
+    ChannelMemberAddEvent({ required this.channel, required this.user });
+}
+
+class ChannelMemberLeaveEvent {
+    Channel channel;
+    User user;
+    ChannelMemberLeaveEvent({ required this.channel, required this.user });
+}
