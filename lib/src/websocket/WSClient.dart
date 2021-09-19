@@ -26,6 +26,7 @@ class WSClient {
 
   /// Send the `Authenticate` payload to authenticate the WebSocket connection.
   /// Returns after the `ready` event is received.
+  /// TODO read the line above this
   Future<void> _authenticate() async {
     if (!connecting) {
       throw 'No connection attempt made yet; cannot authenticate';
